@@ -58,23 +58,23 @@
 
 💻 **Terminal Command Suggestions:** It can suggest terminal commands based on the context of the project, making it easier to manage the development environment.
 
-### Copilot Edit
-📝 AI-powered code suggestions and improvements directly within your editor.
+### 📝 Copilot Edit
+AI-powered code suggestions and improvements directly within your editor.
 
-### Copilot Agent
-🤖 New agent mode is capable of iterating on its own code, recognizing errors, and fixing them automatically. It can suggest terminal commands and ask you to execute them. It also analyzes run-time errors with self-healing capabilities. MCP tools can also be called in the Agent mode.
+### 🤖 Copilot Agent
+New agent mode is capable of iterating on its own code, recognizing errors, and fixing them automatically. It can suggest terminal commands and ask you to execute them. It also analyzes run-time errors with self-healing capabilities. MCP tools can also be called in the Agent mode.
 
-### Customer Instructions
-📃 Guidelines for customizing Copilot's behavior and suggestions to fit your workflow or team requirements.
+### 📃 Customer Instructions
+Guidelines for customizing Copilot's behavior and suggestions to fit your workflow or team requirements.
 
-### Custom Chat Modes
-💢 Define specialized chat modes to optimize Copilot's responses for different development scenarios.
+### 💢 Custom Chat Modes
+Define specialized chat modes to optimize Copilot's responses for different development scenarios.
 
-### Custom Prompts
-💬 Create tailored prompts to guide Copilot's code generation and explanations for specific use cases.
+### 💬 Custom Prompts
+Create tailored prompts to guide Copilot's code generation and explanations for specific use cases.
 
-### Plan Mode
-📃 Creates a comprehensive project plan for the requested task, outlining EPICs and user stories needed to achieve the objective.
+### 📃 Plan Mode
+Creates a comprehensive project plan for the requested task, outlining EPICs and user stories needed to achieve the objective.
 
 ### Extensions
 🛠️ Use extensions by typing @  
