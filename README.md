@@ -76,6 +76,9 @@ Create tailored prompts to guide Copilot's code generation and explanations for 
 ### 📃 Plan Mode
 Creates a comprehensive project plan for the requested task, outlining EPICs and user stories needed to achieve the objective.
 
+### 💪 Agent Skills
+Enhances the ability of GitHub Copilot to perform specialized tasks.
+
 ### Extensions
 🛠️ Use extensions by typing @  
 ☁️ Azure, Docker, and many others!  
