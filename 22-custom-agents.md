@@ -14,7 +14,7 @@ These modes are designed to complement your expertise, helping you code faster a
 ### Sources
 
 - [https://github.blog/ai-and-ml/github-copilot/copilot-ask-edit-and-agent-modes-what-they-do-and-when-to-use-them/](https://github.blog/ai-and-ml/github-copilot/copilot-ask-edit-and-agent-modes-what-they-do-and-when-to-use-them/)
-- [https://code.visualstudio.com/docs/copilot/customization/custom-chat-modes](https://code.visualstudio.com/docs/copilot/customization/custom-chat-modes)
+- [https://code.visualstudio.com/docs/copilot/customization/custom-agents](https://code.visualstudio.com/docs/copilot/customization/custom-agents)
 
 ### Prompt in Azure Principal Architect agent mode
 How to build a resilient AKS cluster?
