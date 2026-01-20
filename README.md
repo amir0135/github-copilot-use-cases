@@ -67,8 +67,8 @@ New agent mode is capable of iterating on its own code, recognizing errors, and 
 ### 📃 Customer Instructions
 Guidelines for customizing Copilot's behavior and suggestions to fit your workflow or team requirements.
 
-### 💢 Custom Chat Modes
-Define specialized chat modes to optimize Copilot's responses for different development scenarios.
+### 💢 Custom Agents
+Define specialized agents to optimize Copilot's responses for different development scenarios.
 
 ### 💬 Custom Prompts
 Create tailored prompts to guide Copilot's code generation and explanations for specific use cases.
