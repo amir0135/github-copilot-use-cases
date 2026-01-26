@@ -2,8 +2,8 @@
 # You can use the Copilot SDK to build a command-line assistant. You'll start with the basics, add streaming responses, then add custom tools - giving Copilot the ability to call your code.
 
 # Step 1
-# - Make sure GitHub Copilot CLI installed and authenticated https://docs.github.com/en/copilot/how-tos/set-up/install-copilot-cli
-# - Install the relevant GitHub Copilot SDK (e.g. for Python: pip install github-copilot-sdk)
+# Make sure GitHub Copilot CLI installed and authenticated https://docs.github.com/en/copilot/how-tos/set-up/install-copilot-cli
+# Install the relevant GitHub Copilot SDK (e.g. for Python: pip install github-copilot-sdk)
 
 # Step 2
 # Run this script in the terminal: py 26-copilot-sdk.py
