@@ -5,7 +5,7 @@
 
 
 ### Prompt in Ask:
-- list commits hosseinzahed/github-copilot-use-cases
+- list commits <YOUR_GITHUB_USERNAME>/<YOUR_REPO_NAME>
 - In which Azure regions gpt-5.2 model is available?
 - What are the available services in the Denmark East Azure region?
 - Find the AI landing zone's document, read the document, summarize and store it in an Markdown file under the docs folder.

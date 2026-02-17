@@ -9,7 +9,7 @@
 @azure list all resource groups
 
 ### Prompt 2 in Ask:
-@azure list all resources under rg-ai-demo-hz
+@azure list all resources under <YOUR_RESOURCE_GROUP_NAME>
 
 ### Check other extensions like:
 @docker
