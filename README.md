@@ -82,6 +82,9 @@ Enhances the ability of GitHub Copilot to perform specialized tasks.
 ### ✨ GitHub Copilot SDK
 Infuses GitHub Copilot capabilities into your applications (.NET, Python, Go, Node/Typescript)
 
+### 🔗 Azure DevOps Integration
+Use the Azure DevOps MCP to query work items, create branches, PRs, and pipelines directly from your IDE. Maintains traceability from requirements to implementation.
+
 ### Extensions
 🛠️ Use extensions by typing @  
 ☁️ Azure, Docker, and many others!  
