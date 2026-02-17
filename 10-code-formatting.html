@@ -5,3 +5,167 @@ It should be a self-contained file with a proper header.
 Place 4 countries in each row. 
 Don't forget to add proper paddings and margins.
 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>European Countries</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .flag-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+        .card {
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-4 mb-5">
+        <h1 class="display-5">European Countries</h1>
+        <p class="lead mb-0">Explore 12 countries across Europe</p>
+    </header>
+
+    <div class="container mb-5">
+        <!-- Row 1 -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://flagcdn.com/w640/de.png" class="card-img-top flag-img" alt="Germany Flag">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Germany</h5>
+                        <p class="card-text text-muted">Population: 83.2 million</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://flagcdn.com/w640/fr.png" class="card-img-top flag-img" alt="France Flag">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">France</h5>
+                        <p class="card-text text-muted">Population: 67.8 million</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://flagcdn.com/w640/it.png" class="card-img-top flag-img" alt="Italy Flag">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Italy</h5>
+                        <p class="card-text text-muted">Population: 59.0 million</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://flagcdn.com/w640/es.png" class="card-img-top flag-img" alt="Spain Flag">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Spain</h5>
+                        <p class="card-text text-muted">Population: 47.4 million</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://flagcdn.com/w640/pl.png" class="card-img-top flag-img" alt="Poland Flag">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Poland</h5>
+                        <p class="card-text text-muted">Population: 37.7 million</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://flagcdn.com/w640/nl.png" class="card-img-top flag-img" alt="Netherlands Flag">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Netherlands</h5>
+                        <p class="card-text text-muted">Population: 17.6 million</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://flagcdn.com/w640/se.png" class="card-img-top flag-img" alt="Sweden Flag">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Sweden</h5>
+                        <p class="card-text text-muted">Population: 10.5 million</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://flagcdn.com/w640/pt.png" class="card-img-top flag-img" alt="Portugal Flag">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Portugal</h5>
+                        <p class="card-text text-muted">Population: 10.3 million</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://flagcdn.com/w640/at.png" class="card-img-top flag-img" alt="Austria Flag">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Austria</h5>
+                        <p class="card-text text-muted">Population: 9.1 million</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://flagcdn.com/w640/ch.png" class="card-img-top flag-img" alt="Switzerland Flag">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Switzerland</h5>
+                        <p class="card-text text-muted">Population: 8.8 million</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://flagcdn.com/w640/no.png" class="card-img-top flag-img" alt="Norway Flag">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Norway</h5>
+                        <p class="card-text text-muted">Population: 5.5 million</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://flagcdn.com/w640/ie.png" class="card-img-top flag-img" alt="Ireland Flag">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Ireland</h5>
+                        <p class="card-text text-muted">Population: 5.1 million</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3">
+        <p class="mb-0">&copy; 2026 European Countries Explorer</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+</body>
+</html>
