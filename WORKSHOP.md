@@ -70,7 +70,7 @@ A partner development team recently shared the findings from their retrospective
 | # | Block | Time | Demo files in this repo |
 |---|---|---|---|
 | 0 | Welcome & Context | 10 min | — |
-| 1 | How Copilot Actually Works (Trust & Limits) | 25 min | [README.md](README.md), [copilot-model-comparison.md](copilot-model-comparison.md) |
+| 1 | How Copilot Actually Works (Trust & Limits) | 35 min | [README.md](README.md), [copilot-model-comparison.md](copilot-model-comparison.md) |
 | 2 | High-Value Developer Workflows | 45 min | [01](01-code-explanation.py), [02](02-code-navigation.md), [03](03-code-refactoring.ts), [05](05-bug-fixing.py), [07](07-test-generation.py) |
 | 3 | Prompting for Maintainable Code | 30 min | [15-custom-instructions.md](15-custom-instructions.md), [16-custom-prompts.md](16-custom-prompts.md) |
 | 4 | Agents, Permissions & Automation | 30 min | [17-copilot-agent.md](17-copilot-agent.md), [18-custom-agents.md](18-custom-agents.md), [19-agent-skills.md](19-agent-skills.md), [20-mcp.md](20-mcp.md), [enterprise-mcp-servers.md](enterprise-mcp-servers.md) |
@@ -111,13 +111,32 @@ Total: **3 hours**
 
 ---
 
-## 1. How Copilot Actually Works — Trust & Limits — 25 min
+## 1. How Copilot Actually Works — Trust & Limits — 35 min
 
 **Goal:** Address trust issues upfront (clear signal from the survey).
 
 ### What to say (core narrative)
 
 > "The single biggest reason Copilot 'lies' to you is simple: it doesn't see what you think it sees. It's not reading your whole repository, your database schema, your teammate's PR from last week, or the ticket in Azure DevOps — unless you *give* it those things. So when it confidently invents a method that doesn't exist, it's not being dishonest. It's doing pattern matching on the limited slice you showed it. Once you understand that, most of the 'magic' and most of the 'danger' becomes predictable."
+
+### A 5-minute UI tour (do this first, before anything else)
+
+> "Before we talk about *how* Copilot works, let's make sure we're all looking at the same screen. I'll click through every surface you'll see me use today, in the order I'll use them. If something on my screen looks different from yours, flag it now — not in Block 5."
+
+Walk through, live, in this order:
+
+1. **The Copilot sidebar / chat panel.** Where it docks, how to open it (`Ctrl+Alt+I` / `⌃⌘I`). Point out the **mode toggle** at the top: **Ask · Edit · Agent**. Say out loud: *"Three modes, three blast radii. We'll come back to this."*
+2. **The model picker** (bottom of the chat input). Open the dropdown. Show that **Claude Sonnet 4.5**, **GPT-5**, **Claude Opus 4.7**, etc. are all selectable. Don't pick yet — flag that we'll talk billing in a minute.
+3. **Context icons in the chat input.**
+   - `#` → attach a file, folder, symbol, `#codebase`, `#selection`, problem, terminal output. *"This is how you stop Copilot guessing."*
+   - `/` → slash commands: `/explain`, `/fix`, `/tests`, `/new`. *"Pre-baked prompts. Use them for the boring stuff."*
+   - `@` → participants and extensions: `@workspace`, `@terminal`, `@github`, plus any installed extensions. *"These change *who* answers the question."*
+4. **Inline chat / Copilot Edits.** Press `Ctrl+I` / `⌘I` in the editor — show the in-line prompt box. Then open **Copilot Edits** (multi-file diff view) and point at the per-hunk accept/reject buttons. *"This is a draft PR that hasn't been raised yet."*
+5. **Inline completions (ghost text).** Type a comment in any file, pause, and let the ghost text appear. Tab to accept, Esc to dismiss, `Alt+]` / `Alt+[` to cycle alternatives. *"This is the only surface that writes code without you asking. Treat it accordingly."*
+6. **Agent surface (preview).** Toggle to **Agent** mode. Don't run it yet — just point at the **"Allow / Allow once / Deny"** approval prompts that will appear when it wants to run a command or edit a file. *"Every dangerous action stops and asks. That's the safety net. We'll exercise it in Block 4."*
+7. **The status bar Copilot icon.** Click it. Show **enable/disable per language**, **proxy settings**, and the link to your **quota / usage page**. *"If Copilot ever goes quiet, this is the first place to check."*
+
+> 🎯 **One-liner to land here:** *"Three modes (Ask / Edit / Agent), three context prefixes (`#` / `/` / `@`), one approval gate. That's the whole UI. Everything else is preference."*
 
 ### Topics with detail
 
@@ -126,6 +145,19 @@ Total: **3 hours**
 - **Doesn't see:** anything you didn't open or attach, private runtime behavior, your org's internal conventions, your database state.
 - **Concrete example to walk through:** "Open a C# file that calls a helper defined in another file that isn't open. Ask Copilot to refactor it. Watch it invent a plausible-looking signature for the helper. Now open the helper file and ask again. Completely different answer."
 - **Tie back to survey:** "This is *exactly* why it 'looks right but is wrong' — people are asking hard questions with half the context attached."
+
+**The context window — what actually fits, and why your chat gets dumber over time**
+- **What "context window" means in one sentence:** it's the total amount of text (your prompt + attached files + the chat history so far + Copilot's own answer) that the model can hold in its head for a single response. Measured in **tokens** (~4 chars ≈ 1 token in English; code is denser).
+- **Rough sizes today (orders of magnitude, not exact):** standard chat models ~128K tokens; large-context models (Claude Opus 4.7 1M, GPT-5 long-context) up to ~1M. *"A million tokens sounds infinite. It isn't — a mid-size C# repo blows past it."*
+- **What auto-attaches (and silently eats your budget):** the active file, selected text, recently opened tabs, and — in Agent mode — anything Copilot reads during its loop. Plus every previous turn of the chat. *"The chat panel looks empty. The context window isn't."*
+- **Why long chats degrade:** as history grows, older turns get truncated or summarised. The model starts "forgetting" your earlier constraints. Symptoms: it re-introduces patterns you told it to avoid, re-suggests code you already rejected, drifts in style.
+- **Concrete demo (30 sec):** open a long-running chat from earlier today, scroll up, then ask: *"What were the first three rules I gave you in this thread?"* Watch it miss one. *"This is why the peer team said 'keep context in one thread' — but also why you sometimes have to start a fresh one."*
+- **Rules of thumb to give the room:**
+  1. **Attach explicitly with `#`.** Don't rely on "open tabs" — it's invisible and unpredictable.
+  2. **Smaller is better.** Attach the *one* file or symbol you mean, not the whole folder.
+  3. **New task → new chat.** When the subject changes, open a fresh thread. Old context isn't free.
+  4. **Long chat going off the rails? Summarise and restart.** Ask Copilot: *"Summarise the decisions we've made in this thread as bullet points."* Copy that into a new chat. Continue.
+  5. **Big-context models for big-context tasks only.** Don't waste an Opus 1M request on a 20-line refactor — see billing, next.
 
 **Chat vs inline vs Agent (the three modes that matter)**
 - **Inline (Tab-complete):** fast, low-stakes, great for finishing a line or a small block. You're always in control — you approve character by character.
@@ -138,9 +170,47 @@ Total: **3 hours**
 - **Hidden complexity:** silently rewrites working code "while it's in there". Mitigation: ask for diffs, review them line by line, reject scope creep.
 - **Confident tone for uncertain answers:** it sounds equally sure when it's right and when it's wrong. "Tone is not a signal. Code that compiles and tests that pass are signals."
 
+**Billing & where it runs — what procurement and security will ask about on Monday**
+
+> "Two questions come up the moment Copilot leaves the demo and hits a real team: *what does it cost per developer per month?* and *where does our code go when we hit Enter?* Let's answer both before the procurement email arrives."
+
+*Usage-based billing — the standard vs premium distinction*
+- **The model:** every paid Copilot plan (Business, Enterprise, Pro, Pro+) includes **unlimited inline code completions** plus a **monthly allowance of "premium requests"** for chat, edits, and agent mode.
+- **Standard vs premium requests:**
+  - **Standard requests** (default chat model, today's lightweight Sonnet/GPT class): typically counted as **1× per request** against your allowance — for most teams effectively unlimited in normal use.
+  - **Premium requests** (large/frontier models — Claude Opus 4.7, GPT-5 long-context, Gemini 2.5 Pro, etc.): counted at a **higher multiplier** (often 1×–10× depending on the model). Agent mode and `#codebase` calls also burn more because they read more.
+- **Monthly allowances (orders of magnitude — verify in your tenant):** Business ~300 premium req/user/mo, Enterprise ~1000, Pro ~300, Pro+ ~1500. *"Numbers shift — point people at the GitHub billing page, don't memorise."*
+- **What happens when you run out:**
+  - Default: requests are **throttled or fall back to a standard model** — they don't fail silently.
+  - Admins can **enable paid overage** (per-request billing) or **cap it at zero** to guarantee no surprise invoice. **Default for most enterprises should be cap-at-zero until you have usage data.**
+- **How to check your own balance:** status-bar Copilot icon → *"Manage Copilot"* → opens github.com usage page. Show this live.
+- **Cost guardrails to give the room:**
+  1. **Default to the standard model.** Only escalate to Opus / GPT-5 long-context when a standard model has already failed.
+  2. **Two-prompt budget applies to premium requests too.** Don't burn 5× Opus calls re-asking the same question.
+  3. **Agents are expensive *per task*.** A single agent loop can spend 10–50 requests. Worth it for the right job; ruinous as a default.
+  4. **Admins: set the overage cap explicitly.** Don't leave it on "unlimited" by accident.
+
+*Local vs cloud — where the inference actually happens*
+- **Default reality today:** **all GitHub Copilot inference runs in the cloud** — on Microsoft / GitHub / model-provider infrastructure (Azure OpenAI, Anthropic, Google). Your prompt + attached context leaves your machine over TLS, gets a response, comes back.
+- **What gets sent:** the prompt, attached files (`#`), selected text, recent chat turns, and — in Agent mode — anything the agent reads. **Not** your whole repo, **not** files you didn't attach.
+- **What does *not* happen on Business/Enterprise plans:** prompts and suggestions are **not used to train the public foundation models**. There's a separate contractual data-handling commitment — point people at GitHub's Trust Center, don't paraphrase it on stage.
+- **Data residency:** GitHub Copilot Enterprise offers **EU data residency** for prompt/response handling — relevant for NKT. Confirm the current state in your tenant settings; don't promise it on stage if you haven't verified.
+- **Where local *does* enter the picture (and where it doesn't):**
+  - ✅ **AI Toolkit for VS Code / Ollama / LM Studio** let you run open models (Llama, Phi, Mistral, etc.) **fully on your laptop** — useful for offline work, highly sensitive snippets, or experimenting with a model before paying for it.
+  - ✅ These are **separate products** from GitHub Copilot. They don't reduce your Copilot bill; they're a parallel option.
+  - ❌ **GitHub Copilot itself does not run locally today.** There is no "offline mode" for Copilot chat or agent. If the network is down, Copilot is down.
+  - ⚠️ **Bring-your-own-key / self-hosted endpoints** exist in some enterprise configurations (Azure OpenAI proxied through your tenant). Treat as an advanced topic — flag it exists, don't demo it.
+- **Decision guide to give the room:**
+  - *"Normal day-to-day work on non-secret code?"* → Cloud Copilot, standard model. Done.
+  - *"Sensitive snippet you'd rather not send anywhere?"* → Don't paste it. Either rewrite it generically first, or use a local model via AI Toolkit for that one task.
+  - *"Need a frontier model for a hard problem?"* → Cloud Copilot, premium model, mind the quota.
+  - *"Air-gapped environment?"* → Copilot isn't the right tool today. Local-only stack.
+
+> 🎯 **One-liner to land here:** *"Standard requests are effectively free; premium requests are metered; everything runs in the cloud unless you deliberately chose otherwise. Procurement will ask all three — now you can answer."*
+
 ### Demo moment (5 min)
 
-Open [README.md](README.md) and walk through the **3S principles** (Simple, Specific, Short) and the best-practices list. Then flip to [copilot-model-comparison.md](copilot-model-comparison.md) to show that *which model you pick also changes trust* — some are faster and shallower, some are slower and more thorough.
+Open [README.md](README.md) and walk through the **3S principles** (Simple, Specific, Short) and the best-practices list. Then flip to [copilot-model-comparison.md](copilot-model-comparison.md) to show that *which model you pick also changes trust* — some are faster and shallower, some are slower and more thorough. **Tie it back to billing:** point at which models in the table are premium-multiplier and which aren't, and say out loud *"this is also a cost decision, not just a capability one."*
 
 ### One-liner to land
 
