@@ -6,7 +6,7 @@
 # Install the relevant GitHub Copilot SDK (e.g. for Python: pip install github-copilot-sdk)
 
 # Step 2
-# Run this script in the terminal: py 26-copilot-sdk.py
+# Run this script in the terminal: py 23-copilot-sdk.py
 # You should see a response from the Copilot assistant.
 
 # Learn more: https://github.com/github/copilot-sdk/blob/main/docs/getting-started.md

@@ -1,6 +1,6 @@
 # GitHub Copilot Model Comparison Guide
 
-> **Last updated:** February 2026
+> **Last updated:** May 2026
 >
 > A practical guide to help developers choose the right AI model in GitHub Copilot based on their task.
 
@@ -10,73 +10,80 @@
 
 | Model | Provider | Speed | Reasoning | Code Quality | Context Window | Best For |
 |-------|----------|-------|-----------|--------------|----------------|----------|
-| **GPT-4.1** | OpenAI | Fast | High | Excellent | 1M tokens | General coding, large codebases |
-| **GPT-4o** | OpenAI | Fast | High | Excellent | 128K tokens | Balanced coding tasks, multimodal |
-| **Claude Sonnet 4** | Anthropic | Fast | High | Excellent | 200K tokens | Everyday coding, refactoring |
-| **Claude Opus 4** | Anthropic | Slow | Very High | Best-in-class | 200K tokens | Complex architecture, agentic tasks |
-| **Claude 3.5 Sonnet** | Anthropic | Fast | Good | Very Good | 200K tokens | Quick code generation |
-| **Gemini 2.5 Pro** | Google | Medium | Very High | Excellent | 1M tokens | Huge codebases, deep reasoning |
-| **Gemini 2.0 Flash** | Google | Very Fast | Moderate | Good | 1M tokens | Quick iterations, simple tasks |
-| **o3-mini** | OpenAI | Medium | Very High | Excellent | 200K tokens | Math, algorithms, logic puzzles |
-| **o4-mini** | OpenAI | Medium | Very High | Excellent | 200K tokens | Advanced reasoning, edge cases |
+| **GPT-5.2** | OpenAI | Medium | Very High | Best-in-class | 400K tokens | Flagship coding, complex reasoning |
+| **GPT-5.2 mini** | OpenAI | Fast | High | Excellent | 400K tokens | Fast everyday coding, balanced cost |
+| **GPT-5.1** | OpenAI | Fast | High | Excellent | 256K tokens | General coding, broad availability |
+| **GPT-4.1** | OpenAI | Fast | High | Excellent | 1M tokens | Large codebases when 1M context is needed |
+| **Claude Opus 4.7** | Anthropic | Slow | Very High | Best-in-class | 500K tokens | Deepest reasoning, long agentic runs |
+| **Claude Sonnet 4.5** | Anthropic | Fast | High | Excellent | 500K tokens | Everyday coding, refactoring, default choice |
+| **Claude Haiku 4** | Anthropic | Very Fast | Moderate | Very Good | 200K tokens | Quick edits, autocomplete, simple tasks |
+| **Gemini 3.0 Pro** | Google | Medium | Very High | Excellent | 2M tokens | Massive codebases, deep multi-file analysis |
+| **Gemini 2.5 Flash** | Google | Very Fast | Good | Very Good | 1M tokens | Fast iterations on long files |
+| **o4-mini** | OpenAI | Medium | Very High | Excellent | 200K tokens | Algorithms, math, edge-case logic |
 
 ---
 
 ## Detailed Model Profiles
 
+### GPT-5.2 (OpenAI)
+
+- **Strengths:** OpenAI's flagship as of 2026. Unified reasoning + coding model with a built-in "thinking" mode that adapts to task difficulty. Excellent tool use, strong instruction following, and top-tier results on real-world coding benchmarks.
+- **Weaknesses:** Higher latency when reasoning mode kicks in; premium request cost.
+- **Use when:** Hard debugging, architectural decisions, agentic workflows, or anything where you want the strongest single model for the job.
+
+### GPT-5.2 mini (OpenAI)
+
+- **Strengths:** Most of GPT-5.2's coding quality at a fraction of the latency and cost. Strong default for everyday work, good multimodal support.
+- **Weaknesses:** Doesn't reason as deeply as full GPT-5.2 on the hardest problems.
+- **Use when:** Day-to-day coding, chat, multi-file edits where speed and cost matter as much as quality.
+
+### GPT-5.1 (OpenAI)
+
+- **Strengths:** Mature, broadly available, well-understood behavior. Strong general-purpose coder, solid instruction following.
+- **Weaknesses:** Surpassed by GPT-5.2 on hardest reasoning tasks.
+- **Use when:** You want a stable, reliable model and don't need the absolute newest capabilities.
+
 ### GPT-4.1 (OpenAI)
 
-- **Strengths:** Instruction-following, large context window (1M tokens), strong at coding across languages, good at working with large files and repos.
-- **Weaknesses:** Can be verbose in explanations.
-- **Use when:** You have a large codebase and need the model to understand broad context, or need reliable general-purpose coding assistance.
+- **Strengths:** Still the OpenAI option with the largest context window (1M tokens). Good when you need to feed an entire repo in.
+- **Weaknesses:** Older generation — weaker reasoning than GPT-5.x models.
+- **Use when:** You specifically need 1M-token context from an OpenAI model and don't need GPT-5-level reasoning.
 
-### GPT-4o (OpenAI)
+### Claude Opus 4.7 (Anthropic)
 
-- **Strengths:** Fast, multimodal (understands images/screenshots), strong all-around coder, good at following nuanced instructions.
-- **Weaknesses:** Smaller context window than GPT-4.1.
-- **Use when:** You need a fast, reliable default model for everyday coding. Great when sharing screenshots of errors or UI mockups.
+- **Strengths:** Anthropic's deepest reasoning model. Excels at sustained autonomous work, complex multi-file refactors, architectural design, and security-sensitive analysis. The "Extra high reasoning" mode is especially strong on hard problems.
+- **Weaknesses:** Slowest model in the lineup; highest premium request cost.
+- **Use when:** Complex debugging, large-scale refactors, architectural design, long agent runs, or whenever other models fail.
 
-### Claude Sonnet 4 (Anthropic)
+### Claude Sonnet 4.5 (Anthropic)
 
-- **Strengths:** Excellent code generation and refactoring, strong at understanding intent, transparent reasoning, good at multi-step edits.
-- **Weaknesses:** Can be cautious and ask for clarification more than necessary.
-- **Use when:** Refactoring, code reviews, multi-file edits, writing clean and idiomatic code. Strong default choice for day-to-day development.
+- **Strengths:** The current sweet spot for everyday development. Excellent code quality, strong intent understanding, clean diffs, reliable in agent mode.
+- **Weaknesses:** Occasionally over-cautious and may ask for clarification.
+- **Use when:** Refactoring, code reviews, multi-file edits, writing idiomatic code. The recommended default for most developers.
 
-### Claude Opus 4 (Anthropic)
+### Claude Haiku 4 (Anthropic)
 
-- **Strengths:** Deepest reasoning capability, best at complex multi-step agentic tasks, superb at architectural decisions, excels at sustained autonomous work.
-- **Weaknesses:** Slowest model — noticeably higher latency. Uses more premium requests.
-- **Use when:** Complex debugging, large-scale refactors, architectural design, multi-file agentic workflows, or when other models fail to produce correct results.
+- **Strengths:** Very fast, low-cost, surprisingly capable for its tier. Good for autocomplete, quick chat answers, and simple edits.
+- **Weaknesses:** Less depth on complex reasoning or large refactors.
+- **Use when:** High-frequency, low-complexity tasks where latency and cost matter most.
 
-### Claude 3.5 Sonnet (Anthropic)
+### Gemini 3.0 Pro (Google)
 
-- **Strengths:** Fast, concise, good at straightforward code generation.
-- **Weaknesses:** Older model, surpassed by Sonnet 4 in most benchmarks.
-- **Use when:** Quick edits and simple code generation where speed matters more than depth.
+- **Strengths:** Massive 2M-token context window — can ingest very large codebases or long documents in one shot. Strong reasoning, excellent at cross-file analysis and math.
+- **Weaknesses:** Slower when fully reasoning; can over-explain.
+- **Use when:** Whole-repo analysis, refactors that span many files, deep algorithmic problems, or long-document understanding.
 
-### Gemini 2.5 Pro (Google)
+### Gemini 2.5 Flash (Google)
 
-- **Strengths:** Massive 1M token context, strong reasoning with "thinking" capabilities, excellent at analyzing entire repositories, good at math and science.
-- **Weaknesses:** Can be slower due to extended thinking, occasionally over-explains.
-- **Use when:** You need to analyze or refactor across an entire large codebase, need deep reasoning about algorithmic problems, or want to process very long files.
-
-### Gemini 2.0 Flash (Google)
-
-- **Strengths:** Very fast responses, 1M token context, good for rapid iteration.
-- **Weaknesses:** Less depth in reasoning compared to Pro models. May miss nuance in complex tasks.
-- **Use when:** Quick questions, boilerplate generation, simple refactors, or when speed is the top priority.
-
-### o3-mini (OpenAI)
-
-- **Strengths:** Specialized in step-by-step reasoning, strong at math, algorithms, and logic. Punches above its weight on hard problems.
-- **Weaknesses:** Slower than non-reasoning models, less suited for simple code generation.
-- **Use when:** Algorithm design, debugging tricky logic errors, competitive programming problems, or when you need the model to "think through" a problem carefully.
+- **Strengths:** Very fast with a 1M-token context — great combination for quick iteration over long files.
+- **Weaknesses:** Less depth than Gemini 3.0 Pro or Claude Opus 4.7.
+- **Use when:** Fast scans of long files, boilerplate generation, quick Q&A over a large codebase.
 
 ### o4-mini (OpenAI)
 
-- **Strengths:** Next-gen reasoning model from OpenAI, improved tool use and coding accuracy over o3-mini, excellent at edge-case handling.
-- **Weaknesses:** Higher latency than standard models, premium request cost.
-- **Use when:** Complex reasoning tasks, multi-step debugging, writing code that handles all edge cases, or when o3-mini's results aren't quite right.
+- **Strengths:** Dedicated reasoning model. Strong at algorithms, math, and edge-case logic. Often punches above its weight on tricky bugs.
+- **Weaknesses:** Slower than non-reasoning models; less suited for simple generation. Increasingly overlapped by GPT-5.2's built-in reasoning mode.
+- **Use when:** Algorithm design, competitive programming, hard logic bugs — especially when you don't need GPT-5.2's full premium cost.
 
 ---
 
@@ -86,89 +93,89 @@
 
 | Priority | Model | Why |
 |----------|-------|-----|
-| 1st | **GPT-4o** | Fast, accurate, great default |
-| 2nd | **Claude Sonnet 4** | Excellent code quality, strong intent understanding |
-| 3rd | **Gemini 2.0 Flash** | Fastest responses for simple completions |
+| 1st | **Claude Sonnet 4.5** | Best blend of code quality, speed, and intent understanding |
+| 2nd | **GPT-5.2 mini** | Fast, accurate, cheaper than full GPT-5.2 |
+| 3rd | **Claude Haiku 4** | Fastest responses for simple completions |
 
 ### Code Refactoring & Multi-File Edits
 
 | Priority | Model | Why |
 |----------|-------|-----|
-| 1st | **Claude Sonnet 4** | Best at clean, idiomatic refactors across files |
-| 2nd | **Claude Opus 4** | For complex refactors that require deep understanding |
-| 3rd | **GPT-4.1** | Large context handles big refactors well |
+| 1st | **Claude Sonnet 4.5** | Cleanest, most idiomatic multi-file refactors |
+| 2nd | **Claude Opus 4.7** | For complex refactors needing deep understanding |
+| 3rd | **GPT-5.2** | Strong agentic refactoring with built-in reasoning |
 
 ### Debugging & Bug Fixing
 
 | Priority | Model | Why |
 |----------|-------|-----|
-| 1st | **Claude Opus 4** | Deep reasoning catches subtle bugs |
-| 2nd | **o4-mini** | Step-by-step reasoning excels at logic errors |
-| 3rd | **Claude Sonnet 4** | Good balance of speed and accuracy |
+| 1st | **Claude Opus 4.7** | Deepest reasoning catches subtle bugs |
+| 2nd | **GPT-5.2** | Reasoning mode excels at logic errors |
+| 3rd | **Claude Sonnet 4.5** | Great balance of speed and accuracy |
 
 ### Algorithm Design & Competitive Programming
 
 | Priority | Model | Why |
 |----------|-------|-----|
-| 1st | **o4-mini** | Built for complex reasoning and edge cases |
-| 2nd | **o3-mini** | Strong at math and algorithmic thinking |
-| 3rd | **Gemini 2.5 Pro** | Deep thinking mode handles hard problems |
+| 1st | **GPT-5.2** | Strongest reasoning for hard algorithmic problems |
+| 2nd | **o4-mini** | Dedicated reasoning model, lower cost than GPT-5.2 |
+| 3rd | **Gemini 3.0 Pro** | Deep thinking mode handles hard problems |
 
 ### Understanding & Explaining Code
 
 | Priority | Model | Why |
 |----------|-------|-----|
-| 1st | **Claude Sonnet 4** | Clear, well-structured explanations |
-| 2nd | **GPT-4o** | Strong at natural language explanations |
-| 3rd | **Gemini 2.5 Pro** | Thorough analysis of large code sections |
+| 1st | **Claude Sonnet 4.5** | Clear, well-structured explanations |
+| 2nd | **GPT-5.2 mini** | Natural, well-paced explanations |
+| 3rd | **Gemini 3.0 Pro** | Thorough analysis across very large code sections |
 
 ### Writing Tests
 
 | Priority | Model | Why |
 |----------|-------|-----|
-| 1st | **Claude Sonnet 4** | Writes comprehensive, idiomatic tests |
-| 2nd | **GPT-4o** | Good coverage of edge cases |
-| 3rd | **Claude Opus 4** | For complex test scenarios requiring deep reasoning |
+| 1st | **Claude Sonnet 4.5** | Writes comprehensive, idiomatic tests |
+| 2nd | **GPT-5.2 mini** | Good coverage of edge cases at lower cost |
+| 3rd | **Claude Opus 4.7** | For complex test scenarios requiring deep reasoning |
 
 ### Large Codebase Navigation & Analysis
 
 | Priority | Model | Why |
 |----------|-------|-----|
-| 1st | **Gemini 2.5 Pro** | 1M token context, deep analysis |
-| 2nd | **GPT-4.1** | 1M token context, strong coding |
-| 3rd | **Gemini 2.0 Flash** | 1M token context, fastest |
+| 1st | **Gemini 3.0 Pro** | 2M token context, deep analysis |
+| 2nd | **Claude Opus 4.7** | 500K context with best-in-class reasoning |
+| 3rd | **Gemini 2.5 Flash** | 1M context, fastest |
 
 ### Agentic / Multi-Step Autonomous Tasks
 
 | Priority | Model | Why |
 |----------|-------|-----|
-| 1st | **Claude Opus 4** | Best sustained autonomous execution |
-| 2nd | **Claude Sonnet 4** | Good agentic performance, faster |
-| 3rd | **GPT-4.1** | Reliable instruction following over long tasks |
+| 1st | **Claude Opus 4.7** | Best sustained autonomous execution |
+| 2nd | **GPT-5.2** | Strong agentic tool use with built-in reasoning |
+| 3rd | **Claude Sonnet 4.5** | Reliable agent mode, faster and cheaper |
 
 ### Documentation & README Generation
 
 | Priority | Model | Why |
 |----------|-------|-----|
-| 1st | **Claude Sonnet 4** | Clean, well-organized writing |
-| 2nd | **GPT-4o** | Natural, polished prose |
-| 3rd | **Gemini 2.5 Pro** | Thorough and detailed |
+| 1st | **Claude Sonnet 4.5** | Clean, well-organized writing |
+| 2nd | **GPT-5.2 mini** | Natural, polished prose |
+| 3rd | **Gemini 3.0 Pro** | Thorough and detailed |
 
 ### Security Review & Vulnerability Detection
 
 | Priority | Model | Why |
 |----------|-------|-----|
-| 1st | **Claude Opus 4** | Deepest analysis of security implications |
-| 2nd | **o4-mini** | Reasoning catches non-obvious vulnerabilities |
-| 3rd | **Claude Sonnet 4** | Good security awareness, faster |
+| 1st | **Claude Opus 4.7** | Deepest analysis of security implications |
+| 2nd | **GPT-5.2** | Reasoning catches non-obvious vulnerabilities |
+| 3rd | **Claude Sonnet 4.5** | Good security awareness, faster |
 
 ### Infrastructure & DevOps (Terraform, Docker, CI/CD)
 
 | Priority | Model | Why |
 |----------|-------|-----|
-| 1st | **GPT-4o** | Broad knowledge of DevOps tooling |
-| 2nd | **Claude Sonnet 4** | Clean, correct IaC generation |
-| 3rd | **GPT-4.1** | Handles complex multi-file configs |
+| 1st | **Claude Sonnet 4.5** | Clean, correct IaC and pipeline generation |
+| 2nd | **GPT-5.2 mini** | Broad knowledge of DevOps tooling |
+| 3rd | **Gemini 3.0 Pro** | Handles huge multi-file Terraform/Helm trees |
 
 ---
 
@@ -176,17 +183,17 @@
 
 ```
 Is your task simple (quick edit, boilerplate, simple question)?
-├── YES → Gemini 2.0 Flash or GPT-4o
+├── YES → Claude Haiku 4 or GPT-5.2 mini
 └── NO
     ├── Does it require deep reasoning (algorithms, math, complex logic)?
-    │   ├── YES → o4-mini or o3-mini
+    │   ├── YES → GPT-5.2 or o4-mini
     │   └── NO
-    │       ├── Is it a large codebase or very long file?
-    │       │   ├── YES → Gemini 2.5 Pro or GPT-4.1
+    │       ├── Is it a very large codebase or very long file (>500K tokens)?
+    │       │   ├── YES → Gemini 3.0 Pro or GPT-4.1 (1M)
     │       │   └── NO
     │       │       ├── Is it a complex multi-step or agentic task?
-    │       │       │   ├── YES → Claude Opus 4
-    │       │       │   └── NO → Claude Sonnet 4 or GPT-4o
+    │       │       │   ├── YES → Claude Opus 4.7
+    │       │       │   └── NO → Claude Sonnet 4.5 (recommended default)
 ```
 
 ---
@@ -195,8 +202,8 @@ Is your task simple (quick edit, boilerplate, simple question)?
 
 | Model Tier | Models | Rate Impact |
 |------------|--------|-------------|
-| **Standard** | GPT-4o, Claude Sonnet 4, Claude 3.5 Sonnet, Gemini 2.0 Flash | Normal request consumption |
-| **Premium** | Claude Opus 4, Gemini 2.5 Pro, o3-mini, o4-mini, GPT-4.1 | Higher request consumption (uses premium requests) |
+| **Standard** | Claude Sonnet 4.5, Claude Haiku 4, GPT-5.2 mini, GPT-5.1, Gemini 2.5 Flash | Normal request consumption |
+| **Premium** | Claude Opus 4.7, GPT-5.2, Gemini 3.0 Pro, o4-mini, GPT-4.1 | Higher request consumption (uses premium requests) |
 
 > **Tip:** Use premium models strategically for hard problems. Default to standard-tier models for routine work to preserve your premium request quota.
 
@@ -206,7 +213,7 @@ Is your task simple (quick edit, boilerplate, simple question)?
 
 1. **Chat panel:** Click the model name dropdown at the top of the Copilot Chat panel.
 2. **Inline chat:** The model selector appears in the inline chat widget.
-3. **Copilot Edits:** Select the model from the dropdown in the Copilot Edits panel.
+3. **Copilot Edits / Agent mode:** Select the model from the dropdown in the panel.
 4. **Settings:** You can set a default model in VS Code settings under `github.copilot.chat.models`.
 
 ---
@@ -215,12 +222,13 @@ Is your task simple (quick edit, boilerplate, simple question)?
 
 | If you want... | Use this model |
 |----------------|---------------|
-| A fast, reliable default | **GPT-4o** |
-| The cleanest code & refactors | **Claude Sonnet 4** |
-| Maximum brainpower for hard problems | **Claude Opus 4** |
-| Reasoning through algorithms & math | **o4-mini** |
-| To work with massive codebases | **Gemini 2.5 Pro** or **GPT-4.1** |
-| The fastest possible response | **Gemini 2.0 Flash** |
+| A fast, reliable default | **Claude Sonnet 4.5** |
+| Cleanest code & refactors | **Claude Sonnet 4.5** |
+| Maximum brainpower for hard problems | **Claude Opus 4.7** or **GPT-5.2** |
+| Reasoning through algorithms & math | **GPT-5.2** or **o4-mini** |
+| To work with massive codebases | **Gemini 3.0 Pro** (2M) or **GPT-4.1** (1M) |
+| Fastest possible response | **Claude Haiku 4** or **Gemini 2.5 Flash** |
+| Best cost/quality balance | **GPT-5.2 mini** |
 
 ---
 
