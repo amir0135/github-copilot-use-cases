@@ -2,6 +2,8 @@
 
 > 🎓 **Running the NKT 3-hour workshop?** Start with [WORKSHOP.md](WORKSHOP.md) — it maps every file below to an agenda block (trust & limits, workflows, prompting, agents, hands-on, adoption).
 
+> 📄 **Participant?** Grab [PARTICIPANT-HANDOUT.md](PARTICIPANT-HANDOUT.md) — a one-page Monday-morning cheatsheet of the rules, reflexes, and red flags from the workshop.
+
 > 🎤 **Facilitator note:** This README is the script you walk through in **Block 1 — Trust & Limits**. Each section below has a one-line bullet *plus* a short "say this aloud" elaboration you can use live. Don't read it word-for-word — pick the lines that match your audience and the questions you've already heard.
 
 ### Environment

@@ -28,7 +28,7 @@
 ### GPT-5.2 (OpenAI)
 
 - **Strengths:** OpenAI's flagship as of 2026. Unified reasoning + coding model with a built-in "thinking" mode that adapts to task difficulty. Excellent tool use, strong instruction following, and top-tier results on real-world coding benchmarks.
-- **Weaknesses:** Higher latency when reasoning mode kicks in; premium request cost.
+- **Weaknesses:** Higher latency when reasoning mode kicks in; high AI-credit consumption per call.
 - **Use when:** Hard debugging, architectural decisions, agentic workflows, or anything where you want the strongest single model for the job.
 
 ### GPT-5.2 mini (OpenAI)
@@ -52,7 +52,7 @@
 ### Claude Opus 4.7 (Anthropic)
 
 - **Strengths:** Anthropic's deepest reasoning model. Excels at sustained autonomous work, complex multi-file refactors, architectural design, and security-sensitive analysis. The "Extra high reasoning" mode is especially strong on hard problems.
-- **Weaknesses:** Slowest model in the lineup; highest premium request cost.
+- **Weaknesses:** Slowest model in the lineup; highest AI-credit consumption in the lineup.
 - **Use when:** Complex debugging, large-scale refactors, architectural design, long agent runs, or whenever other models fail.
 
 ### Claude Sonnet 4.5 (Anthropic)
@@ -198,14 +198,16 @@ Is your task simple (quick edit, boilerplate, simple question)?
 
 ---
 
-## Cost & Rate Limit Considerations
+## Cost & AI-Credit Considerations
 
-| Model Tier | Models | Rate Impact |
-|------------|--------|-------------|
-| **Standard** | Claude Sonnet 4.5, Claude Haiku 4, GPT-5.2 mini, GPT-5.1, Gemini 2.5 Flash | Normal request consumption |
-| **Premium** | Claude Opus 4.7, GPT-5.2, Gemini 3.0 Pro, o4-mini, GPT-4.1 | Higher request consumption (uses premium requests) |
+GitHub Copilot billing is now **usage-based**: all chat, edit, and agent calls draw from a shared **AI-credit pool**, priced against the underlying model's token cost (pass-through to provider pricing). There is **no fixed "1× vs 10× multiplier"** anymore — consumption depends on **actual tokens used × model cost**.
 
-> **Tip:** Use premium models strategically for hard problems. Default to standard-tier models for routine work to preserve your premium request quota.
+| Model Tier | Models | Credit Impact |
+|------------|--------|---------------|
+| **Lightweight / standard** | Claude Sonnet 4.5, Claude Haiku 4, GPT-5.2 mini, GPT-5.1, Gemini 2.5 Flash | Low credit consumption — suitable for day-to-day chat, edits, simple assistance |
+| **Frontier / heavy** | Claude Opus 4.7, GPT-5.2, Gemini 3.0 Pro, o4-mini, GPT-4.1 | Significantly higher credit consumption — varies with provider token pricing and context length |
+
+> **Tip:** Default to lightweight models for routine work. Escalate to frontier models only when needed — long context, multi-agent flows, and repeated trial-and-error all burn the shared credit pool faster. Always check current entitlements and prices on the GitHub billing page; numbers shift.
 
 ---
 

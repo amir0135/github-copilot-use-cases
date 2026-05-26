@@ -130,11 +130,18 @@ Walk through, live, in this order:
 3. **Context icons in the chat input.**
    - `#` → attach a file, folder, symbol, `#codebase`, `#selection`, problem, terminal output. *"This is how you stop Copilot guessing."*
    - `/` → slash commands: `/explain`, `/fix`, `/tests`, `/new`. *"Pre-baked prompts. Use them for the boring stuff."*
-   - `@` → participants and extensions: `@workspace`, `@terminal`, `@github`, plus any installed extensions. *"These change *who* answers the question."*
+   - `@` → participants and extensions: `@terminal`, `@github`, `@azure`, plus any installed extensions. *"These change *who* answers the question. (Note: the old `@workspace` participant has been replaced by the `#codebase` context reference — see `#` above.)"*
+    ### example: @terminal #terminal output This test failed. Explain the root cause and give me the next command to verify it.
 4. **Inline chat / Copilot Edits.** Press `Ctrl+I` / `⌘I` in the editor — show the in-line prompt box. Then open **Copilot Edits** (multi-file diff view) and point at the per-hunk accept/reject buttons. *"This is a draft PR that hasn't been raised yet."*
 5. **Inline completions (ghost text).** Type a comment in any file, pause, and let the ghost text appear. Tab to accept, Esc to dismiss, `Alt+]` / `Alt+[` to cycle alternatives. *"This is the only surface that writes code without you asking. Treat it accordingly."*
 6. **Agent surface (preview).** Toggle to **Agent** mode. Don't run it yet — just point at the **"Allow / Allow once / Deny"** approval prompts that will appear when it wants to run a command or edit a file. *"Every dangerous action stops and asks. That's the safety net. We'll exercise it in Block 4."*
-7. **The status bar Copilot icon.** Click it. Show **enable/disable per language**, **proxy settings**, and the link to your **quota / usage page**. *"If Copilot ever goes quiet, this is the first place to check."*
+7. **The "Continue In" handoff menu.** Open the chat session menu (the `+ New Chat Session` dropdown at the top of the chat panel). Point at the **Continue In** group: **Local · Copilot CLI · Cloud**. Say out loud: *"Same conversation, three execution surfaces. You start a task here in the IDE, then hand it off without retyping the prompt."*
+   - **Local (IDE)** → keeps the session in VS Code with you driving every step. Default for interactive work.
+   - **Copilot CLI** → continues the same task in the terminal — useful for long-running shell-heavy work, scripts, or when you want to pipe results into other tools. Same agent config (`AGENTS.md`, custom agents) follows you.
+   - **Cloud (coding agent)** → ships the task off to a sandboxed GitHub-hosted runner that works asynchronously on a branch and opens a PR. Right for "go fix this issue while I'm in a meeting" tasks; **not** right for anything you need to supervise step-by-step.
+   - **What travels with the handoff:** the prompt, the conversation so far, and the repo context. **What doesn't:** your local unsaved buffers (commit or stash first), local-only files (`.env`, secrets), and any tools that only exist on your machine. *"Cloud handoff = code goes to GitHub's runner — same data-handling commitments as the rest of Copilot Business/Enterprise, but **not** your laptop anymore. Don't hand off sensitive uncommitted work."*
+   - **Cost note:** Cloud and Agent handoffs typically trigger **multiple model calls per task** and burn AI credits faster than a single chat turn. Pick the surface that matches the job, not the one that looks coolest.
+8. **The status bar Copilot icon.** Click it. Show **enable/disable per language**, **proxy settings**, and the link to your **quota / usage page**. *"If Copilot ever goes quiet, this is the first place to check."*
 
 > 🎯 **One-liner to land here:** *"Three modes (Ask / Edit / Agent), three context prefixes (`#` / `/` / `@`), one approval gate. That's the whole UI. Everything else is preference."*
 
@@ -174,43 +181,43 @@ Walk through, live, in this order:
 
 > "Two questions come up the moment Copilot leaves the demo and hits a real team: *what does it cost per developer per month?* and *where does our code go when we hit Enter?* Let's answer both before the procurement email arrives."
 
-*Usage-based billing — the standard vs premium distinction*
-- **The model:** every paid Copilot plan (Business, Enterprise, Pro, Pro+) includes **unlimited inline code completions** plus a **monthly allowance of "premium requests"** for chat, edits, and agent mode.
-- **Standard vs premium requests:**
-  - **Standard requests** (default chat model, today's lightweight Sonnet/GPT class): typically counted as **1× per request** against your allowance — for most teams effectively unlimited in normal use.
-  - **Premium requests** (large/frontier models — Claude Opus 4.7, GPT-5 long-context, Gemini 2.5 Pro, etc.): counted at a **higher multiplier** (often 1×–10× depending on the model). Agent mode and `#codebase` calls also burn more because they read more.
-- **Monthly allowances (orders of magnitude — verify in your tenant):** Business ~300 premium req/user/mo, Enterprise ~1000, Pro ~300, Pro+ ~1500. *"Numbers shift — point people at the GitHub billing page, don't memorise."*
+*Usage-based billing — AI credits, not "premium requests"*
+- **The new model:** every paid Copilot plan (Business, Enterprise, Pro, Pro+) includes **unlimited inline code completions** plus a **pool of AI credits (token-based)** shared across chat, edits, and agent mode. The old "premium requests per month" framing is gone — **all usage now draws from a credit pool**, priced on the **underlying model cost (pass-through to provider token pricing)**.
+- **Lightweight vs frontier models (the new "standard vs premium"):**
+  - **Lightweight / standard models** (default chat models, Haiku/Sonnet/GPT mini class): consume **fewer credits per request** — fine for day-to-day chat, edits, and simple assistance.
+  - **Frontier / heavy models** (Claude Opus, GPT long-context, Gemini Pro, multi-agent flows): consume **significantly more credits**, and the exact burn varies by model provider pricing and token volume.
+  - 👉 **Key shift:** there's **no fixed "1× vs 10× multiplier" anymore** — consumption depends on **actual tokens used × model cost**.
+- **Included entitlement:** seat price stays the same (e.g. $19 / $39 tiers); what changes is the **included credit entitlement**, and the exact number is **subject to change**. *"Don't memorise numbers — point people at the latest GitHub billing page."*
 - **What happens when you run out:**
-  - Default: requests are **throttled or fall back to a standard model** — they don't fail silently.
-  - Admins can **enable paid overage** (per-request billing) or **cap it at zero** to guarantee no surprise invoice. **Default for most enterprises should be cap-at-zero until you have usage data.**
-- **How to check your own balance:** status-bar Copilot icon → *"Manage Copilot"* → opens github.com usage page. Show this live.
+  - Usage **does not silently continue.** It draws down remaining credits, then moves to **paid overage (if enabled)** or stops based on configured limits.
+  - Admins can allow **pay-as-you-go overage** or enforce **hard caps (recommended initially)** to avoid surprise invoices. **Default for most enterprises should be hard-cap until you have usage data.**
+- **How to check usage:** dashboards (rolling out) show consumption trends, model usage, and cost projections — treat them as **directional estimates, not exact billing**. Status-bar Copilot icon → *"Manage Copilot"* → opens the github.com usage page. Show this live.
 - **Cost guardrails to give the room:**
-  1. **Default to the standard model.** Only escalate to Opus / GPT-5 long-context when a standard model has already failed.
-  2. **Two-prompt budget applies to premium requests too.** Don't burn 5× Opus calls re-asking the same question.
-  3. **Agents are expensive *per task*.** A single agent loop can spend 10–50 requests. Worth it for the right job; ruinous as a default.
-  4. **Admins: set the overage cap explicitly.** Don't leave it on "unlimited" by accident.
+  1. **Default to efficient models.** Use lightweight models for most work; only escalate when needed.
+  2. **Treat credits as a budget, not requests.** Every call draws from a **shared credit pool** — expensive models and long context burn faster.
+  3. **Be careful with agents.** Agent workflows trigger multiple model calls and can consume significantly more credits per task.
+  4. **Optimise usage patterns.** Avoid repeated prompts and trial-and-error loops; watch heavy users and model selection trends.
+  5. **Admin controls are critical.** Set user-level limits and org-level budgets to prevent a few users draining the shared pool.
+- **The message to land:** this is a shift from ❌ *"fixed requests / abstract PRUs"* to ✅ *"pay for actual AI consumption (industry standard)"* — aligned with OpenAI / Anthropic pricing, with better transparency into cost drivers and more flexibility across models.
 
 *Local vs cloud — where the inference actually happens*
 - **Default reality today:** **all GitHub Copilot inference runs in the cloud** — on Microsoft / GitHub / model-provider infrastructure (Azure OpenAI, Anthropic, Google). Your prompt + attached context leaves your machine over TLS, gets a response, comes back.
 - **What gets sent:** the prompt, attached files (`#`), selected text, recent chat turns, and — in Agent mode — anything the agent reads. **Not** your whole repo, **not** files you didn't attach.
 - **What does *not* happen on Business/Enterprise plans:** prompts and suggestions are **not used to train the public foundation models**. There's a separate contractual data-handling commitment — point people at GitHub's Trust Center, don't paraphrase it on stage.
 - **Data residency:** GitHub Copilot Enterprise offers **EU data residency** for prompt/response handling — relevant for NKT. Confirm the current state in your tenant settings; don't promise it on stage if you haven't verified.
-- **Where local *does* enter the picture (and where it doesn't):**
-  - ✅ **AI Toolkit for VS Code / Ollama / LM Studio** let you run open models (Llama, Phi, Mistral, etc.) **fully on your laptop** — useful for offline work, highly sensitive snippets, or experimenting with a model before paying for it.
-  - ✅ These are **separate products** from GitHub Copilot. They don't reduce your Copilot bill; they're a parallel option.
-  - ❌ **GitHub Copilot itself does not run locally today.** There is no "offline mode" for Copilot chat or agent. If the network is down, Copilot is down.
-  - ⚠️ **Bring-your-own-key / self-hosted endpoints** exist in some enterprise configurations (Azure OpenAI proxied through your tenant). Treat as an advanced topic — flag it exists, don't demo it.
+
+
 - **Decision guide to give the room:**
   - *"Normal day-to-day work on non-secret code?"* → Cloud Copilot, standard model. Done.
   - *"Sensitive snippet you'd rather not send anywhere?"* → Don't paste it. Either rewrite it generically first, or use a local model via AI Toolkit for that one task.
   - *"Need a frontier model for a hard problem?"* → Cloud Copilot, premium model, mind the quota.
   - *"Air-gapped environment?"* → Copilot isn't the right tool today. Local-only stack.
 
-> 🎯 **One-liner to land here:** *"Standard requests are effectively free; premium requests are metered; everything runs in the cloud unless you deliberately chose otherwise. Procurement will ask all three — now you can answer."*
+> 🎯 **One-liner to land here:** *"All usage draws from a shared AI-credit pool — lightweight models burn slowly, frontier models burn fast, agents burn fastest; everything runs in the cloud unless you deliberately chose otherwise. Procurement will ask all three — now you can answer."*
 
 ### Demo moment (5 min)
 
-Open [README.md](README.md) and walk through the **3S principles** (Simple, Specific, Short) and the best-practices list. Then flip to [copilot-model-comparison.md](copilot-model-comparison.md) to show that *which model you pick also changes trust* — some are faster and shallower, some are slower and more thorough. **Tie it back to billing:** point at which models in the table are premium-multiplier and which aren't, and say out loud *"this is also a cost decision, not just a capability one."*
+Open [README.md](README.md) and walk through the **3S principles** (Simple, Specific, Short) and the best-practices list. Then flip to [copilot-model-comparison.md](copilot-model-comparison.md) to show that *which model you pick also changes trust* — some are faster and shallower, some are slower and more thorough. **Tie it back to billing:** point at which models in the table are lightweight vs frontier, and say out loud *"this is also a cost decision — frontier models burn far more AI credits per call, not just a capability one."*
 
 ### One-liner to land
 
@@ -238,7 +245,7 @@ Open [README.md](README.md) and walk through the **3S principles** (Simple, Spec
 | Boilerplate-heavy work | [04-code-generation.md](04-code-generation.md), [26-infrastructure-generation.tf](26-infrastructure-generation.tf) | APIs, DTOs, Vue components, IaC | *"Nobody got into this job to write the 47th DTO. This is where Copilot pays for itself on day one. The key: give it one example of your team's style, and it will match the rest."* |
 | Testing & code review | [07-test-generation.py](07-test-generation.py), [08-security-vulnerability-detection.py](08-security-vulnerability-detection.py) | Generate tests; ask Copilot to **critique** code instead of writing it | *"Here's the mindset flip most people miss: Copilot is often more useful as a reviewer than as a writer. Paste your own code and ask 'what's wrong with this?' — you'll be surprised."* |
 | Debugging | [05-bug-fixing.py](05-bug-fixing.py), [06-terminal-chat.md](06-terminal-chat.md) | Feed stack traces; ask for **hypotheses, not fixes** | *"Don't say 'fix this bug'. Say 'give me three possible causes, ranked by likelihood, with what I'd check for each'. You stay the engineer. It's the rubber duck that can actually read."* |
-| Code navigation | [02-code-navigation.md](02-code-navigation.md) | Orient fast in unfamiliar areas | *"First day on a new codebase, you normally lose half a week reading. With Copilot, you lose half a day. Ask: 'Where does authentication happen?', 'Which files handle payment?', 'What calls this method?'"* |
+| Code navigation | [02-code-navigation.md](02-code-navigation.md) | Orient fast in unfamiliar areas with `#codebase` | *"First day on a new codebase, you normally lose half a week reading. With Copilot, you lose half a day. The file shows the pattern: `#codebase Where is the method that calculates the price of an item?` Same shape for: 'Where does authentication happen?', 'Which files handle payment?', 'What calls this method?'"* |
 
 ### Transitions to use between demos
 
@@ -294,18 +301,26 @@ Open [README.md](README.md) and walk through the **3S principles** (Simple, Spec
 
 ### Mini-exercises (live, no heavy hands-on)
 
+> 🗂️ **Files to have open before this section:**
+> - [09-performance-optimization.py](09-performance-optimization.py) — for Exercises A & B
+> - [05-bug-fixing.py](05-bug-fixing.py) — for Exercise C
+
 **Exercise A — Bad prompt → risky output**
-> Prompt to show on screen: *"Make this faster."*
-> Expected result: Copilot rewrites loops, changes data structures, maybe introduces parallelism. Discuss: "What did it assume? What did it break? How would we notice in review?"
+> **Open:** [09-performance-optimization.py](09-performance-optimization.py) · Chat panel · new chat
+> **Prompt to show on screen:** *"Make this faster."*
+> Expected result: Copilot rewrites the loop, possibly introduces a closed-form formula or numpy. Discuss: *"What did it assume? What did it break? How would we notice in review?"*
 
 **Exercise B — Improved prompt → safer output**
-> Prompt: *"This method is called ~100 times per request and shows up in our profiler. Suggest up to three targeted optimizations. Do not change the public signature, do not add dependencies, and explain the trade-offs. I'll pick one before you write code."*
-> Discuss: "Same goal. Completely different conversation. Which one would you want a junior dev to send?"
+> **Open:** [09-performance-optimization.py](09-performance-optimization.py) · same file, new chat
+> **Prompt:** *"This method is called ~100 times per request and shows up in our profiler. Suggest up to three targeted optimizations. Do not change the public signature, do not add dependencies, and explain the trade-offs. I'll pick one before you write code."*
+> Discuss: *"Same goal. Completely different conversation. Which one would you want a junior dev to send?"*
 
 **Exercise C — Catching scope creep live (the anti-rot drill)**
-> Take a small, well-scoped change (e.g., "add null check to this method") and run it with a deliberately loose prompt: *"Improve this method."*
-> Expected result: Copilot adds an extra helper, renames a variable, maybe introduces a new exception type. **All of it works. None of it was asked for.**
-> Now re-run with the *"minimum diff — no scope creep"* pattern. Show the two diffs side by side.
+> **Open:** [05-bug-fixing.py](05-bug-fixing.py) · Inline Chat (`Cmd+I` / `Ctrl+I`) on `buggy_function`
+> **Loose prompt:** *"Improve this method."*
+> Expected result: Copilot adds type checks, renames things, maybe adds an overload or docstring. **All of it works. None of it was asked for.**
+> **Then:** new chat, same file → *"Add a type check so this raises TypeError when either argument is not a number. Minimum diff — no scope creep, no other changes."*
+> Show the two diffs side by side.
 > Discuss: *"In a six-month codebase, which of these compounds into the 'unused code / missing structure' problem? Which one can the next developer maintain?"*
 
 ### Demo assets
@@ -380,30 +395,85 @@ Open [README.md](README.md) and walk through the **3S principles** (Simple, Spec
 
 ### What to say (the switch)
 
-> "So far we've looked at each workflow in isolation. For the next 45 minutes I'm going to chain them together on a realistic codebase — explain, refactor, test, review — in the order you'd actually do it on a Monday morning. Your job is to challenge me. Ask 'why that prompt?', 'why did you accept that?', 'why didn't you just write it yourself?' That's where the learning is."
+> "So far we've looked at each workflow in isolation. For the next 45 minutes I'm going to chain them together on a realistic codebase — generate, explain, refactor, test, review — in the order you'd actually do it on a Monday morning. Your job is to challenge me. Ask 'why that prompt?', 'why did you accept that?', 'why didn't you just write it yourself?' That's where the learning is."
 
-### Setup
+### Setup (do this before the block starts)
 
-The demo uses [StockPriceChecker/](StockPriceChecker/) (C# / .NET) from this repo — a realistic, stack-aligned example that mirrors common enterprise patterns.
+- Open the solution [github-copilot-dotnet-demo.sln](github-copilot-dotnet-demo.sln) in VS Code.
+- Have the [StockPriceChecker/](StockPriceChecker/) folder visible in the Explorer.
+- **Check:** does `StockPriceChecker/Program.cs` exist?
+  - **If yes** (Block 2 already generated it): skip Part 1, start at Part 2.
+  - **If no**: Part 1 generates it live. This is the recommended path — it makes the demo feel real.
+- Chat panel open, **Agent mode**, model = Claude Sonnet. New chat.
 
-### Demo walkthrough (run as one continuous narrative)
+### The demo — one continuous story (45 min)
 
-**Part 1 — Understand an unfamiliar area (15 min)**
-- Open a file nobody in the room has seen before.
-- Ask Copilot to explain it. Read the explanation *aloud* with the file open.
-- Call out at least one thing Copilot got *subtly* wrong or oversimplified — and say why you noticed.
-- Group question: *"What did it get right? What did it smooth over?"*
+This is a **single, narrated session**. Don't break the flow to explain features — point at decisions as they happen.
 
-**Part 2 — Improve without increasing complexity (15 min)**
-- Pick a method that's doing too much.
-- Use the prompt pattern from Block 3: *"Refactor for readability. No new classes, no new dependencies, same public behavior."*
-- Show the diff on screen. Compare before/after side-by-side.
-- Group question: *"Is this actually simpler, or just differently complicated? Would you merge it?"*
+---
 
-**Part 3 — Review as a group (15 min)**
-- Let Copilot propose changes to a file.
-- Review each hunk live, **out loud**, with the group voting accept / reject / reshape.
-- After each hunk, ask the facilitator questions below.
+**Part 1 — Generate the starting point (8 min)** · *Agent mode*
+
+> Frame it: *"Imagine a ticket landed in your queue: 'we need a quick CLI that prints the current MSFT price.' Let's see what Copilot does with zero context."*
+
+- **Prompt:**
+  > *"Create a C# console app in the `Program.cs` file under the `StockPriceChecker` folder. Fetch and show the MSFT stock price from the Yahoo Finance API. Add comments to the code."*
+- **What to point at while it runs:**
+  - It creates the file (didn't exist before) — that's the agent doing file I/O.
+  - The User-Agent header on `HttpClient` (Yahoo blocks default UA). *"Did it know that, or did it learn from a failed run?"*
+  - Exception handling for `HttpRequestException`, `JsonException`. *"Would a junior dev have remembered all three?"*
+- **Decision to model out loud:** accept the file, but **read it line-by-line** before accepting. *"This is the bar. Not 'does it compile' — 'do I understand every line?'"*
+
+---
+
+**Part 2 — Understand the code you just accepted (10 min)** · *Ask mode*
+
+> Frame it: *"Pretend you didn't see Part 1. A colleague handed you this file. You have 10 minutes before standup."*
+
+- Open `StockPriceChecker/Program.cs`. Switch to **Ask mode**.
+- **Prompt 1:** *"#codebase Explain the architecture of this project in 5 bullets."*
+- **Prompt 2:** *"Walk me through `Program.cs` line by line. What does each block do, and what could fail at runtime?"*
+- **What to point at:**
+  - Read the explanation **aloud** with the file open. Don't skim.
+  - Find **one thing Copilot got subtly wrong or oversimplified** (e.g., it claims the JSON path is guaranteed; it isn't). Call it out.
+- **Group question:** *"What did it get right? What did it smooth over?"*
+
+---
+
+**Part 3 — Refactor without scope creep (12 min)** · *Edit mode or Inline Chat*
+
+> Frame it: *"The whole thing is in `Main`. That's fine for a demo, painful for a real codebase. Let's clean it up — without letting Copilot redesign the world."*
+
+- In `Program.cs`, select the contents of `Main`. Open **Inline Chat** (`Cmd+I` / `Ctrl+I`).
+- **Prompt:** *"Refactor this for readability by extracting the HTTP call and the JSON parsing into separate private methods. Keep the public behavior identical. No new classes. No new NuGet packages. Minimum diff."*
+- **What to point at:**
+  - Accept the diff hunk-by-hunk, **out loud**.
+  - Reject anything you didn't ask for: a new `record`, a renamed variable, a new exception type, a `// TODO` it invented. *"All of it works. None of it was asked for. This is the rot."*
+- **Group question:** *"Is this actually simpler, or just differently complicated? Would you merge it?"*
+
+---
+
+**Part 4 — Generate tests (8 min)** · *Agent mode*
+
+> Frame it: *"There are no tests. There should be. Watch how fast this part is — and where the danger is."*
+
+- **Prompt:** *"Generate xUnit tests for the methods in `StockPriceChecker/Program.cs`. Include edge cases (empty response, malformed JSON, network error) and happy path. Add a new test project if needed."*
+- **What to point at:**
+  - It may scaffold a whole new `.csproj`. *"Do we want that? Yes — but in a real repo, check `.sln` and folder conventions first."*
+  - The mocking strategy it picks for `HttpClient`. *"Is this how the rest of our codebase mocks HTTP? If not, that's drift."*
+- **Decision to model:** accept the tests, but **only** after asking the next prompt.
+
+---
+
+**Part 5 — Self-audit (the anti-rot drill, 7 min)** · *Ask mode*
+
+> Frame it: *"This is the prompt the peer team wishes they'd used from day one."*
+
+- **Prompt:** *"Review the changes you produced in this session. List anything you added that I didn't explicitly ask for — new files, new dependencies, renamed symbols, helper methods, comments, TODOs. Be ruthless."*
+- **What to point at:**
+  - Copilot is **surprisingly honest** about its own scope creep when asked directly.
+  - For each item it confesses to, ask the group: *accept, revert, or defer?*
+- **Group question:** *"If we hadn't asked this, how much of that cruft would have ended up in `main`?"*
 
 ### Facilitator questions to put to the group after each change
 
@@ -433,6 +503,35 @@ The demo uses [StockPriceChecker/](StockPriceChecker/) (C# / .NET) from this rep
 > "Most training dies on the flight home. The goal of the next 15 minutes is to make sure *this one* doesn't. We'll look at four things that separate teams who actually adopt Copilot from teams who stop using it after a month."
 
 > 💬 **From a peer team — the hardest-won lesson:** *"Have a structure in place in the beginning — repository, services — especially on the backend. Never push pure AI code into main branches. Zero trust in just adding the code; it still needs to be reviewed and confirmed before committing."* If you take **one** thing home from today, take that.
+
+#### Extended talking points (pick the 3–4 that fit your audience)
+
+**Why adoption stalls — name it before they feel it**
+> "There are three failure modes I see over and over. **One:** people try it for a week, hit two bad answers, and quietly stop. **Two:** people use it enthusiastically for a month, ship a pile of subtly-wrong code, get burned in a review, and swing to never using it again. **Three** — and this is the dangerous one — people keep using it but stop reading the diffs. That's how 'Copilot debt' enters your codebase. Today's job is to design *against* all three."
+
+**Make it part of the workflow, not a side trip**
+> "Copilot doesn't stick when it's a separate activity — 'let me go ask Copilot.' It sticks when it's *inside* the things you already do: writing the commit message, drafting the PR description, explaining a failing test, writing the first draft of a doc. Pick three moments in your week where you'll *always* reach for it. Inline-complete while coding. `/explain` before reviewing a PR. Chat to draft your standup notes. Three reflexes — that's the bar."
+
+**The "two-prompt budget" — the single best anti-frustration habit**
+> "If you haven't gotten something useful out of Copilot in two prompts, stop. Write it yourself, or step back and rewrite the question from scratch with proper context — the right `#file`, the right selection, the right model. The third prompt is almost always you arguing with the model instead of fixing the input. That's the moment people decide 'Copilot is dumb' — when really, the prompt was."
+
+**Context is a workflow, not a setting**
+> "The single biggest difference between teams who love Copilot and teams who hate it is whether they attach context. `#file`, `#selection`, `#codebase`, `#problems`, `.github/copilot-instructions.md`. None of this is optional. Make it a team habit: *no context, no complaint*. If someone says 'Copilot gave me garbage,' the first question is 'what did you attach?'"
+
+**Normalize saying no to Copilot — out loud, in front of juniors**
+> "The most important thing a senior engineer can model is **rejecting** a Copilot suggestion. Out loud. In a pairing session. *'No, that's wrong because…'*, *'No, that's more than I asked for,'*, *'No, that helper already exists — look.'* Juniors learn what 'good' looks like by watching seniors push back. If your seniors accept everything, your juniors will too — and that's how the codebase rots."
+
+**Treat it as a junior teammate, not an oracle**
+> "Mental model that works: Copilot is a fast, eager, slightly overconfident junior who's read every open-source repo but has been on your team for zero days. You wouldn't merge a junior's PR without reading it. You wouldn't let a junior touch prod auth code unsupervised. Same rules. The output quality is *senior-ish*; the judgment behind it is *intern-level*. You supply the judgment."
+
+**Where to start on Monday — concrete, small, reversible**
+> "Don't try to 'roll out Copilot' as a program. Pick **one repo**, **one workflow**, **one week**. Examples: 'this sprint, every PR gets a Copilot review pass before a human review.' Or: 'this week, every new test file starts from a Copilot draft.' Measure it — even informally — and decide at the retro whether to keep it. That's how adoption compounds: small wins that survive a sprint, not big initiatives that survive a slide deck."
+
+**Tell people it's OK to *not* use it**
+> "Permission matters. If the team culture is 'real engineers use Copilot for everything,' you'll get people pretending. There are tasks where Copilot is slower than just typing — short scripts, tiny fixes, anything where you already know the answer. Saying 'I didn't use Copilot for this, it was faster without' should be a totally normal sentence in a PR."
+
+**The review bar goes *up*, not down**
+> "Counter-intuitive but critical: when Copilot writes more of the code, the *human* reviewer's job gets harder, not easier. You can no longer assume the author understood every line — because there's a real chance they didn't. So reviewers should ask more 'why' questions, not fewer. If 'why did you write it this way?' gets answered with 'Copilot suggested it,' that's a failed review on both sides."
 
 ### Topics with detail
 
@@ -470,7 +569,11 @@ The demo uses [StockPriceChecker/](StockPriceChecker/) (C# / .NET) from this rep
 - [24-plan-mode.md](24-plan-mode.md) — plan before letting Copilot act. "This is the single highest-leverage habit. Plan first, execute second."
 - [25-workflow-generation.md](25-workflow-generation.md) — CI guardrails. The CI pipeline is the backstop for anything the reviewer misses.
 
-✅ **Outcome:** Teams leave knowing **what to try next week**.
+### Hand out the cheatsheet
+
+> 📄 **Drop [PARTICIPANT-HANDOUT.md](PARTICIPANT-HANDOUT.md) in the chat now.** It's the one-page Monday-morning version of everything in this block — the one rule, the three reflexes, the two-prompt budget, the diff-discipline checklist, and a fillable "my experiment" block. Tell them: *"This is what you keep open next week. Everything else in the repo is reference; this is the wallet card."*
+
+✅ **Outcome:** Teams leave knowing **what to try next week** — and with a single link they'll actually re-open.
 
 ---
 
@@ -479,6 +582,8 @@ The demo uses [StockPriceChecker/](StockPriceChecker/) (C# / .NET) from this rep
 ### What to say (the close)
 
 > "Three things before we wrap. First: what actually worked for you today? I want real answers, not polite ones. Second: what do you still not trust? That's the list I take back to shape the next session. Third: every team here commits to *one* experiment before we meet again — one repo, one workflow, one week. Not a program. An experiment."
+
+> 📄 **Re-share [PARTICIPANT-HANDOUT.md](PARTICIPANT-HANDOUT.md)** as you start the round-robin. Ask each team to fill in the *Repo / Workflow / Date* block at the bottom while they wait their turn — that's the "experiment" you're asking them to commit to.
 
 ### Structure the 10 minutes
 
@@ -548,24 +653,24 @@ The demo uses [StockPriceChecker/](StockPriceChecker/) (C# / .NET) from this rep
 - **Bridge:** *"Explaining one file is easy. Finding things across a repo is the next level."*
 
 #### [02-code-navigation.md](02-code-navigation.md)
-- **Setup:** Chat panel. Use `#codebase` and `@workspace`.
-- **Prompt:** *"#codebase Where does authentication happen in this project? List the files and the entry point."*
-- **Point at:** Copilot returning **file paths**, not just prose — that's the navigation win.
-- **Gotcha:** Ask a follow-up about a file that doesn't exist. Watch it stay confident. *"Tone is not a signal."*
+- **Setup:** Chat panel. Use `#codebase` so Copilot can search beyond the open files.
+- **Prompt:** the one in the file → *"#codebase Where is the method that calculates the price of an item?"*
+- **Point at:** Copilot returning **file paths and symbol names**, not just prose — that's the navigation win.
+- **Gotcha:** Ask a follow-up about a file or symbol that doesn't exist. Watch it stay confident. *"Tone is not a signal."*
 - **Bridge:** *"Once you can find code, you can improve it — carefully."*
 
 #### [03-code-refactoring.ts](03-code-refactoring.ts)
-- **Setup:** File open. Inline Chat (Ctrl+i) on the function.
-- **Prompt:** *"Refactor for readability. Keep the public signature. No new dependencies. Explain the trade-off in two lines."*
-- **Point at:** The **diff view** — accept/reject hunk by hunk.
-- **Gotcha:** If Copilot adds a helper you didn't ask for, reject that hunk on stage. *"This is the scope creep from the peer team's findings."*
+- **Setup:** File open. Inline Chat (Ctrl+i) on the function. *(The file already shows a post-refactor version with two implementations — revert mentally to the original three-positional-parameter form, or just narrate the diff.)*
+- **Prompt:** the one in the file → *"Refactor the code to make it more readable and effective."* Then layer the maintainability constraint: *"Keep the public signature. No new dependencies. Explain the trade-off in two lines."*
+- **Point at:** The **diff view** — accept/reject hunk by hunk. Note how Copilot replaced three positional params with a variadic `...numbers: number[]`.
+- **Gotcha:** If Copilot adds a helper you didn't ask for (the file shows `sumPositiveNumbersThree` alongside the main function — a perfect example of unrequested scope creep), reject that hunk on stage. *"This is the scope creep from the peer team's findings."*
 - **Bridge:** *"That was reading and reshaping existing code. Now let's generate new code."*
 
 #### [04-code-generation.md](04-code-generation.md)
-- **Setup:** Agent mode. Claude Sonnet 4.5.
-- **Prompt:** Use the prompt at the top of the file (it's already there).
-- **Point at:** Copilot reading multiple files before writing — that's the agent loop in action.
-- **Gotcha:** *"Notice it asked permission before running the terminal command. Always read the command before you approve."*
+- **Setup:** Agent mode. Claude Sonnet. `StockPriceChecker/` folder visible (currently only `.csproj` — `Program.cs` will be created by the agent).
+- **Prompt:** the one in the file → *"Create a C# console app in the Program.cs file under the StockPriceChecker folder… Fetch and show the MSFT stock price from the Yahoo Finance API. Add comments to the code."*
+- **Point at:** Copilot creating `Program.cs`, picking an HTTP approach, and running the build — that's the agent loop in action. **This also seeds the codebase Block 5 will use.**
+- **Gotcha:** *"Notice it asked permission before running `dotnet build` / `dotnet run`. Always read the command before you approve."*
 - **Bridge:** *"Generated code shipped with a bug? Let's fix one."*
 
 #### [05-bug-fixing.py](05-bug-fixing.py)
@@ -577,51 +682,51 @@ The demo uses [StockPriceChecker/](StockPriceChecker/) (C# / .NET) from this rep
 
 #### [06-terminal-chat.md](06-terminal-chat.md)
 - **Setup:** VS Code terminal. Ctrl+i in the terminal pane.
-- **Prompt:** *"Show me git log entries from the last 24 hours by author, oneline."*
-- **Point at:** Copilot proposing the command **before** it runs — you approve.
-- **Gotcha:** Ask for `rm -rf` something. *"Watch how confidently it'd type that. Read before you run."* (Do not actually run it.)
+- **Prompt:** the one in the file → *"@terminal list all the files in the current folder that start with a number"*
+- **Point at:** Copilot proposing the command (e.g., `ls [0-9]*`) **before** it runs — you approve.
+- **Gotcha:** Then ask for `rm -rf` something. *"Watch how confidently it'd type that. Read before you run."* (Do not actually run it.)
 - **Bridge:** *"Good. Now the safety net every change needs — tests."*
 
 #### [07-test-generation.py](07-test-generation.py)
-- **Setup:** File open. Chat panel. Sonnet 4.5.
-- **Prompt:** *"Write pytest unit tests for the function in #file. Cover edge cases, null inputs, and error paths — not just the happy path."*
-- **Point at:** Whether it generates the **negative** cases or quietly skips them.
+- **Setup:** File open (`calculate_unit_price`). Chat panel. Claude Sonnet.
+- **Prompt:** start with the file's own prompt → *"Write unit tests for the function using pytest"*. Then re-run with the stricter version: *"…cover edge cases, null inputs, and error paths — not just the happy path."* Compare the two outputs.
+- **Point at:** Whether the first version covers the `ValueError` for `quantity == 0` and whether the second adds negative numbers, floats, and type errors.
 - **Gotcha:** *"If I'd just said 'write tests', I'd have got three happy-path cases and a green CI lying to me."*
 - **Bridge:** *"Tests guard correctness. The next demo guards safety."*
 
 #### [08-security-vulnerability-detection.py](08-security-vulnerability-detection.py)
 - **Setup:** File open. `.github/instructions/security-and-owasp.instructions.md` open in another tab.
-- **Prompt:** *"Perform a security check on this file. Reference OWASP Top 10. For each finding: risk, line number, suggested fix."*
-- **Point at:** That the security instructions file is **auto-applied** (see `applyTo: "*"`).
+- **Prompt:** the one in the file → *"Perform a security check"*. Reinforce: *"Reference OWASP Top 10. For each finding: risk, line number, suggested fix."*
+- **Point at:** Findings that should land — empty `API-Key` header, hard-coded URL, typo (`weahter`) that masks intent, missing TLS verification check, no timeout, no error handling. That the security instructions file is **auto-applied** (see `applyTo: "*"`).
 - **Gotcha:** *"Copilot isn't a SAST tool. It's a second pair of eyes. Use both."*
 - **Bridge:** *"Security covered. What about speed?"*
 
 #### [09-performance-optimization.py](09-performance-optimization.py)
-- **Setup:** File open. Chat panel.
-- **Prompt 1:** *"What's the Big-O of this function?"* → **Prompt 2:** *"Suggest up to three targeted optimizations. No new dependencies. Explain trade-offs. I'll pick before you write code."*
-- **Point at:** That you split the analysis from the change — the engineer-in-the-loop pattern again.
+- **Setup:** File open (`sum_of_squares_not_optimized`). Chat panel.
+- **Prompt 1 (from the file):** *"What's the big-O notation of the function?"* → **Prompt 2 (from the file):** *"Optimize the function."* Then strengthen it: *"Suggest up to three targeted optimizations. No new dependencies. Explain trade-offs. I'll pick before you write code."*
+- **Point at:** That Copilot should spot the closed-form `n*(n+1)*(2n+1)/6` — O(n) → O(1). Split the analysis from the change — the engineer-in-the-loop pattern again.
 - **Gotcha:** Reject any answer that changes the public signature. *"Speed is never worth a breaking change you didn't ask for."*
 - **Bridge:** *"Faster code is good. Documented code is what survives the team."*
 
 #### [10-document-generation.py](10-document-generation.py)
 - **Setup:** Agent mode for the whole-file pass, or Inline for a single function.
-- **Prompt:** Use the one in the file (Python 2 → 3 documentation prep).
-- **Point at:** That documentation is the **safest** agent task — reversible, no behaviour change.
+- **Prompt:** the one in the file → *"Document and explain the Python 2 code in preparation to modernize it into Python 3 code."*
+- **Point at:** Copilot calling out the Python 2 → 3 migration points (`urllib2` → `urllib.request`, `cStringIO` → `io`, `ConfigParser` → `configparser`, `print` statement → function). Documentation is the **safest** agent task — reversible, no behaviour change.
 - **Gotcha:** *"This is where I tell teams to start their agent journey. Doc generation. Low blast radius."*
-- **Bridge:** *"Documentation done. Now let's format the front-end mess."*
+- **Bridge:** *"Documentation done. Now let's generate some front-end markup."*
 
 #### [11-code-formatting.html](11-code-formatting.html)
-- **Setup:** File open. Inline Chat.
-- **Prompt:** *"Format this HTML: 2-space indent, semantic tags where possible, no inline styles. Don't change content."*
-- **Point at:** The diff — verify content is untouched.
+- **Setup:** Empty HTML file (or scratch). Inline Chat or Chat panel. The committed file shows the *expected* output — keep it open in a Live Preview / browser tab so the audience sees the result render.
+- **Prompt:** the one at the top of the file → *"Create an html page listing 12 random european countries with their population size and flag as bootstrap cards. It should be a self-contained file with a proper header. Place 4 countries in each row. Don't forget to add proper paddings and margins."*
+- **Point at:** Bootstrap CDN inclusion, 4-per-row grid (`col-md-3`), and that Copilot picks real flag URLs. Then ask it to *re-format* the result (2-space indent, no inline styles) to show the **formatting** angle — the original prompt is generation; the reformat is the formatting demo.
 - **Gotcha:** *"Your real formatter (Prettier, dotnet format, Black) is still the source of truth. Copilot is the assistant, not the authority."*
 - **Bridge:** *"Same code, different language — let's translate."*
 
 #### [12-code-translation.rs](12-code-translation.rs)
-- **Setup:** File open. Chat panel.
-- **Prompt:** *"Translate this Rust function to idiomatic C#. Preserve semantics. Flag any place where the translation isn't 1:1."*
-- **Point at:** Whether Copilot **flags the lossy bits** (ownership, lifetimes, error types).
-- **Gotcha:** *"Translation is never free. Always test the translated version against the original's behaviour."*
+- **Setup:** File open (`sum_of_evens`). Chat panel.
+- **Prompt:** the one in the file → *"Translate the code into python, typescript, and C#"*. Then add the rigor: *"Preserve semantics. Flag any place where the translation isn't 1:1 (integer overflow, default int width, iteration style)."*
+- **Point at:** Whether Copilot uses idiomatic forms in each target (Python `sum(n for n in numbers if n % 2 == 0)`, TS `.filter().reduce()`, C# LINQ `.Where().Sum()`) and whether it calls out the integer-type difference (Rust `i32` vs Python's arbitrary precision).
+- **Gotcha:** *"Translation is never free. The function is trivial, but ask it to translate a Rust function with `Result<T, E>` or borrows and the lossy bits multiply. Always test the translated version against the original."*
 - **Bridge:** *"That's a code-level translation. Let's see one that talks to a real API."*
 
 #### [api-endpoints.http](api-endpoints.http)
@@ -650,9 +755,9 @@ The demo uses [StockPriceChecker/](StockPriceChecker/) (C# / .NET) from this rep
 - **Bridge:** *"Same idea, but applied to changes across **multiple files** at once."*
 
 #### [13-copilot-edit.md](13-copilot-edit.md)
-- **Setup:** Copilot Edits panel. 2–3 related files attached.
-- **Prompt:** Use the editor prompt in the file.
-- **Point at:** The **unified diff** across files — accept/reject per hunk.
+- **Setup:** Copilot Edits panel. Empty working folder (or a scratch one) — the prompt **creates** two new related files.
+- **Prompt:** the one in the file → *"Create copilot-chat.html and copilot-chat.css files. Create a layout with a header, a footer, a content area and a side nav bar using the bootstrap grid system. Fill each section with random content."*
+- **Point at:** The **unified diff across both files** appearing in the Edits panel — accept/reject per hunk, per file. This is multi-file generation, not single-file autocomplete.
 - **Gotcha:** *"This is a draft PR that hasn't been raised yet. Review like you would a PR — not like autocomplete."*
 - **Bridge:** *"Now the part that makes people nervous — agents."*
 
@@ -661,30 +766,30 @@ The demo uses [StockPriceChecker/](StockPriceChecker/) (C# / .NET) from this rep
 ### Block 4 — Agents, Permissions & Automation
 
 #### [17-copilot-agent.md](17-copilot-agent.md)
-- **Setup:** Agent mode. Sonnet 4.5 for speed (or Opus 4.7 if demoing depth).
-- **Prompt:** Use the one in the file.
-- **Point at:** The **loop** — read → propose edit → run command → observe → iterate. Narrate each step.
-- **Gotcha:** *"One bad assumption early in the loop compounds across 20 edits. Stop it the moment it starts guessing in circles."*
+- **Setup:** Agent mode. Claude Sonnet for speed (or Claude Opus if demoing depth).
+- **Prompt:** the multi-line one in the file → *"Create a self-contained HTML file that displays and animates a 3D Rubik's cube…"* (Three.js, drag-to-rotate, shuffle, arrow-key face rotation, save as `rubiks-cube-3d.html`).
+- **Point at:** The **loop** — plan → create file → propose edits → preview/run → fix bugs (black faces, controls) → iterate. Narrate each step.
+- **Gotcha:** *"One bad assumption early in the loop compounds across 20 edits. Stop it the moment it starts guessing in circles — e.g. when faces turn black and it 'fixes' by adding more materials instead of debugging the rotation."*
 - **Bridge:** *"General agents are powerful. Scoped agents are safer."*
 
 #### [18-custom-agents.md](18-custom-agents.md)
-- **Setup:** Open the file. Switch the agent in the dropdown.
-- **Prompt:** Use one of the agent-mode prompts in the file (Azure Principal Architect or Azure DevOps).
-- **Point at:** That the agent has a *narrower job description* — fewer tools, clearer behaviour.
+- **Setup:** Open the file. Switch the agent in the dropdown (Azure Principal Architect, or Azure DevOps Expert).
+- **Prompt:** one of the prompts in the file → *"How to build a resilient AKS cluster?"* (Azure Principal Architect) **or** *"List all projects under my organization"* (Azure DevOps).
+- **Point at:** That the agent has a *narrower job description* — fewer tools, clearer behaviour. The architect answers with WAF pillars; the DevOps agent calls MCP tools and returns a real list.
 - **Gotcha:** *"Smaller scope = safer behaviour = better output. The opposite of 'one model for everything'."*
 - **Bridge:** *"Custom agents call **skills** — let's see those next."*
 
 #### [19-agent-skills.md](19-agent-skills.md)
-- **Setup:** Agent mode. A skill triggered explicitly.
-- **Prompt:** Use the one in the file.
-- **Point at:** Skills as **tested, reusable workflows** — not freeform prompts.
+- **Setup:** Agent mode with the `webapp-testing` skill available. A local server running the page (Live Preview / Live Server on port 5500).
+- **Prompt:** the one in the file → *"Test the webpage running on http://127.0.0.1:5500/random-countries.html"*
+- **Point at:** The agent picking up the `webapp-testing` skill and driving Playwright — skills as **tested, reusable workflows**, not freeform prompts.
 - **Gotcha:** *"A skill is how you turn a prompt that worked once into something the whole team can rely on twice."*
 - **Bridge:** *"Skills extend the agent inward. MCP extends it outward — to your systems."*
 
 #### [20-mcp.md](20-mcp.md)
-- **Setup:** MCP servers configured. Show a tool call in the agent log.
-- **Prompt:** Use the Ask prompt in the file (Azure region lookup).
-- **Point at:** A real tool call hitting a real Azure endpoint, with a real result coming back.
+- **Setup:** MCP servers configured (GitHub MCP + Azure MCP + Microsoft Learn MCP). Show a tool call in the agent log.
+- **Prompt:** one of the Ask prompts in the file → *"In which Azure regions is gpt-5.2 available?"* or *"@azure Generate a table listing all my resource groups along with their corresponding regions."*
+- **Point at:** A real tool call hitting a real Azure / Learn endpoint, with a real result coming back.
 - **Gotcha:** *"MCP gives Copilot keys to your systems. Read the tool list before you enable a server."*
 - **Bridge:** *"And on the enterprise side — what's safe to connect, and what isn't?"*
 
@@ -696,23 +801,26 @@ The demo uses [StockPriceChecker/](StockPriceChecker/) (C# / .NET) from this rep
 - **Bridge:** *"Interactive development — what happens when the agent asks you to course-correct?"*
 
 #### [21-interactive-agent-development.md](21-interactive-agent-development.md)
-- **Setup:** Agent mode. Prepare to interrupt mid-loop.
-- **Prompt:** Use the agent-mode prompt in the file.
-- **Point at:** That you can **interrupt and redirect** without restarting the whole task.
+- **Setup:** Agent mode. A GitHub issue prepared in advance (the file references `issues/1` in your repo). Prepare to interrupt mid-loop.
+- **Prompt:** the one in the file → *"github issue #1 <YOUR_GITHUB_USERNAME>/<YOUR_REPO_NAME>"*
+- **Point at:** The agent reading the issue, planning the work, and how you can **interrupt and redirect** without restarting the whole task.
 - **Gotcha:** *"Don't let the agent run unattended for 10 minutes. Course-correct in real time."*
 - **Bridge:** *"Custom extensions are the next layer — domain knowledge baked in."*
 
 #### [22-copilot-extension.md](22-copilot-extension.md)
-- **Setup:** Extensions installed. Type `@` to show the picker.
-- **Prompt:** Use the two prompts in the file.
-- **Point at:** The `@` prefix changes which model + tools handle the request.
+- **Setup:** Azure extension installed and signed in. Type `@` to show the picker.
+- **Prompt:** the two in the file → *"@azure list all resource groups"* then *"@azure list all resources under <YOUR_RESOURCE_GROUP_NAME>"*.
+- **Point at:** The `@` prefix changes which model + tools handle the request. Real Azure data comes back, not generic prose.
 - **Gotcha:** *"Pick one or two extensions that match your stack. Don't install everything — context bloat is real."*
 - **Bridge:** *"And for the people who want this in the terminal too…"*
 
 #### [28-cli-with-custom-agents.md](28-cli-with-custom-agents.md)
-- **Setup:** Terminal open. Copilot CLI installed.
-- **Prompt:** Use the CLI command in the file.
-- **Point at:** Same agent definition, different surface — IDE and CLI share config.
+- **Setup:** Terminal open. Azure CLI signed in. Custom agents under `.github/agents/`. Use the terminal inline chat (`Cmd+I` / `Ctrl+I` in the terminal pane) **plus** the chat panel for the agent step.
+- **Prompt sequence (from the file):**
+  1. Terminal chat: *"list all my Azure resource groups in a table"* → Copilot proposes `az group list --output table`.
+  2. Switch to **Azure Principal Architect** agent in the chat panel: *"…assess the architecture of the resources in the [RG] resource group against the Well-Architected Framework pillars and recommend improvements."*
+  3. Back to terminal chat to execute one recommendation (e.g. *"enable diagnostic settings on my App Service…"*).
+- **Point at:** Same agent definition, different surface — terminal inline chat **plus** chat-panel agent working together; IDE and CLI share config.
 - **Gotcha:** *"CI/CD jobs can invoke agents too. Powerful — and exactly where unreviewed AI code most often slips in. Gate it."*
 - **Bridge:** *"Enough theory. Let's run all of this on a real codebase."*
 
@@ -721,7 +829,7 @@ The demo uses [StockPriceChecker/](StockPriceChecker/) (C# / .NET) from this rep
 ### Block 5 — Deep-Dive Demo
 
 #### [StockPriceChecker/](StockPriceChecker/)
-- **Setup:** Open the solution in VS Code. `.cs` files visible. Tests project ready to run.
+- **Setup:** Open the solution (`github-copilot-dotnet-demo.sln`) in VS Code. `StockPriceChecker.csproj` is committed; `Program.cs` is **generated during the Block 2 demo of [04-code-generation.md](04-code-generation.md)** — make sure that step has run before Block 5, or run it now as the opener.
 - **Prompt sequence (45 min, in order):**
   1. *"#codebase Explain the architecture of this project in 5 bullets."*
   2. *"In `StockPriceChecker/Program.cs`, identify any method doing more than one thing. Don't change code yet."*
@@ -738,36 +846,40 @@ The demo uses [StockPriceChecker/](StockPriceChecker/) (C# / .NET) from this rep
 
 #### [24-plan-mode.md](24-plan-mode.md)
 - **Setup:** Plan Mode enabled. New chat.
-- **Prompt:** Use the one in the file.
-- **Point at:** EPICs/stories generated **before** any code change.
+- **Prompt:** the one in the file → *"I'm planning to create a shopping website in React and Node.js… browse by category, search, cart, checkout. Please help me plan the project by creating issues and breaking it down into epics, features, and tasks."*
+- **Point at:** EPICs / features / tasks generated **before** any code change — and the option to push them to GitHub Issues.
 - **Gotcha:** *"Plan first, execute second. This single habit prevents more incidents than any code-review checklist."*
 - **Bridge:** *"And once a plan ships, CI is your backstop."*
 
 #### [25-workflow-generation.md](25-workflow-generation.md)
-- **Setup:** Editor prompt in the file. `.github/workflows/` folder visible.
-- **Prompt:** Use the editor prompt in the file.
-- **Point at:** That CI is generated **alongside** the code, not as an afterthought.
+- **Setup:** Copilot Edits (the file note says *"Use copilot edits"*). `.github/workflows/` folder visible.
+- **Prompt:** the one in the file → *"Generate a default CI workflow for a Python 3 project under .github/workflows/ci-py.yml"*
+- **Point at:** That CI is generated **alongside** the code, not as an afterthought; Edits creates the new YAML file in the right path.
 - **Gotcha:** *"Generated YAML still needs a human review pass. Indentation errors don't fail loudly — they fail silently."*
 - **Bridge:** *"Same idea, but for infrastructure."*
 
 #### [26-infrastructure-generation.tf](26-infrastructure-generation.tf)
 - **Setup:** File open. Terraform extension active. `terraform plan` ready to run.
-- **Prompt:** Use the editor prompt in the file.
-- **Point at:** Run `terraform plan` after generation. Read the plan **aloud**.
+- **Prompt:** the editor prompt in the file → *"Generate an azure resource group in the Sweden Central region and a storage account with the following properties: tier: Standard, replication: Local Redundant."*
+- **Point at:** Run `terraform plan` after generation. Read the plan **aloud** — verify region (`swedencentral`), `account_tier = "Standard"`, `account_replication_type = "LRS"`.
 - **Gotcha:** *"Never apply a template you can't explain. IaC is code — review it like code."*
 - **Bridge:** *"Now tie code → PR → pipeline together."*
 
 #### [27-azure-devops-integration.md](27-azure-devops-integration.md)
-- **Setup:** Azure DevOps MCP server configured. A work item ID ready.
-- **Prompt:** *"Fetch work item #1234, create a branch from main named after it, and open a draft PR linking back to the item."*
-- **Point at:** The traceability chain: **requirement → branch → PR → pipeline** — all from one prompt.
+- **Setup:** Azure DevOps MCP server configured; Azure DevOps Expert agent available (`.github/agents/azure-devops.agent.md`); a real work item ID ready.
+- **Prompt sequence (from the file):**
+  1. *"List all projects in my Azure DevOps organization"* → *"List my active work items assigned to me in the [Project] project"*
+  2. *"Get the details of work item #[ID] and help me create an implementation plan with acceptance criteria, edge cases, and test scenarios."*
+  3. *"Based on work item #[ID], implement the first acceptance criterion in a new Python file called feature_impl.py"*
+  4. *"Generate pytest unit tests…"* → *"Review the code you just generated. What could be wrong?"* → *"Create a summary of the implementation for work item #[ID] that I can add as a comment"*
+- **Point at:** The traceability chain: **requirement → plan → code → tests → review → PR** — all driven from one agent.
 - **Gotcha:** *"In a regulated/industrial context this isn't optional. Every change links back to a work item."*
 - **Bridge:** *"And finally — Copilot inside your own product, not just your IDE."*
 
 #### [23-copilot-sdk.py](23-copilot-sdk.py)
-- **Setup:** Python venv activated. Dependencies installed.
-- **Prompt:** Walk the code; run a `CopilotClient` session live if time allows.
-- **Point at:** Same capability you've been demoing all day — surfaced inside an application.
+- **Setup:** Python venv activated. `github-copilot-sdk` installed and Copilot CLI authenticated (see comments at the top of the file).
+- **Prompt:** Walk the code — `CopilotClient` → `create_session` (system message + model + `azure-docs` MCP server) → `send_and_wait({"prompt": "In which Azure regions is GPT-4.1 available?"})`. Run `py 23-copilot-sdk.py` live if time allows.
+- **Point at:** Same capability you've been demoing all day — model + MCP tools + a prompt — surfaced inside an application, not the IDE.
 - **Gotcha:** *"When you ship Copilot capability in your own product, the review-gate responsibility moves to **you**. Your users won't read the diff."*
 - **Bridge:** *"That's the workshop. Last 10 minutes — what do you take home?"*
 
