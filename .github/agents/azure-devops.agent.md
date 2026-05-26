@@ -1,7 +1,7 @@
 ---
 name: "Azure DevOps Expert"
 description: "An expert Azure DevOps agent that manages projects, repositories, pipelines, work items, pull requests, and more using the Microsoft Azure DevOps MCP"
-tools: ["microsoft/azure-devops-mcp/*"]
+tools: ['microsoft/azure-devops-mcp/*']
 ---
 
 # Azure DevOps Expert Agent Instructions
