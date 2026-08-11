@@ -1,91 +1,107 @@
-## GitHub Copilot Use Cases
+# GitHub Copilot Use Cases
 
-### Environment
-💬 Chat Window (Ctrl + Alt + i)  
-✍️ Inline Chat (Ctrl + i)  
-🧠 Models  
-🗣️ Speak (VS Code Speech Extension)  
-✏️ Edit 
-🤖 Agent  
+A hands-on catalogue of **28 GitHub Copilot capabilities**, each backed by a runnable file or a short walkthrough. Open a numbered file, follow the prompt at the top, and watch the capability in action.
 
-### 3S Principles
-🟢 Simple  
-🔵 Specific  
-🟡 Short  
+Built as demo material for workshops and enablement sessions — the files are deliberately small so a room can follow along live.
 
-### Best Practices
-🆕 New chat!  
-🛠️ Use built-in commands by typing /  
-📝 Add context by typing # or add files or keep files open in tabs  
-👍 Provide feedback  
+> Looking for a structured, multi-hour format instead? See the [Hands-on Copilot Workshop](https://github.com/amir0135/Hands-on-workshop-GH-Copilot).
 
-### Showcasing GitHub Copilot Features:
-📝 **Code Explanation:** Copilot can provide explanations for code snippets, helping developers understand how the code works and what it does.
+---
 
-✍️ **Code Completion:** GitHub Copilot can suggest entire lines or blocks of code based on the context of the current file.
+## Core coding capabilities
 
-🛠️ **Code Generation:** It can generate code snippets from natural language comments, making it easier to implement new features.
+| # | Use case | File | What it shows |
+|---|---|---|---|
+| 01 | Code explanation | [`01-code-explanation.py`](01-code-explanation.py) | Explaining unfamiliar code in place |
+| 02 | Code generation | [`02-code-generation.md`](02-code-generation.md) | Natural-language comments → implementation |
+| 03 | Code refactoring | [`03-code-refactoring.ts`](03-code-refactoring.ts) | Cleaning up and restructuring existing code |
+| 04 | Bug fixing | [`04-bug-fixing.py`](04-bug-fixing.py) | Locating and repairing defects |
+| 05 | Documentation generation | [`05-document-generation.py`](05-document-generation.py) | Docstrings and comments from code |
+| 06 | Test generation | [`06-test-generation.py`](06-test-generation.py) | Unit tests for existing functions |
+| 07 | Code translation | [`07-code-translation.rs`](07-code-translation.rs) | Porting logic between languages |
+| 08 | Security vulnerability detection | [`08-security-vulnerability-detection.py`](08-security-vulnerability-detection.py) | Spotting and fixing insecure patterns |
+| 09 | Performance optimization | [`09-performance-optimization.py`](09-performance-optimization.py) | Algorithmic and data-structure improvements |
+| 10 | Code formatting | [`10-code-formatting.html`](10-code-formatting.html) | Applying style conventions automatically |
+| 11 | Code navigation | [`11-code-nagivation.md`](11-code-nagivation.md) | Finding your way around a large codebase |
 
-🔄 **Code Refactoring:** Copilot can suggest improvements to existing code, helping to optimize and clean up the codebase.
+## Automation & infrastructure
 
-🐞 **Bug Fixing:** It can identify and suggest fixes for bugs in the code, improving code quality and reducing debugging time.
+| # | Use case | File | What it shows |
+|---|---|---|---|
+| 12 | Workflow generation | [`12-workflow-generation.md`](12-workflow-generation.md) | Generating CI/CD workflows |
+| 13 | Infrastructure as code | [`13-infrastructure-generation.tf`](13-infrastructure-generation.tf) | Terraform, Bicep, and ARM generation |
+| 16 | Terminal chat | [`16-terminal-chat.md`](16-terminal-chat.md) | Context-aware shell command suggestions |
+| 27 | Azure DevOps integration | [`27-azure-devops-integration.md`](27-azure-devops-integration.md) | Work items, branches, and PRs from the IDE |
 
-📄 **Documentation Generation:** Copilot can generate documentation for code, including comments and docstrings, making it easier to understand and maintain.
+## Agent mode & extensibility
 
-🧪 **Test Case Generation:** It can create unit tests for functions and methods, ensuring that the code is well-tested and reliable.
+| # | Use case | File | What it shows |
+|---|---|---|---|
+| 14 | Copilot Edit | [`14-copilot-edit.md`](14-copilot-edit.md) | Multi-file edits from a single instruction |
+| 15 | Copilot Extensions | [`15-copilot-extension.md`](15-copilot-extension.md) | Invoking extensions with `@` |
+| 17 | Fetch URL | [`17-fetch-url.md`](17-fetch-url.md) | Pulling external context into a conversation |
+| 18 | Copilot Agent | [`18-copilot-agent.md`](18-copilot-agent.md) | Self-healing iteration on its own output |
+| 19 | MCP | [`19-mcp.md`](19-mcp.md) | Model Context Protocol fundamentals |
+| 20 | Interactive agent development | [`20-interactive-agent-development.md`](20-interactive-agent-development.md) | Building alongside an agent |
+| 24 | Plan mode | [`24-plan-mode.md`](24-plan-mode.md) | EPIC and user-story breakdown before coding |
+| 26 | Copilot SDK | [`26-copilot-sdk.py`](26-copilot-sdk.py) | Embedding Copilot in your own applications |
+| 28 | CLI with custom agents | [`28-cli-with-custom-agents.md`](28-cli-with-custom-agents.md) | Driving agents from the terminal |
 
-🌐 **Code Translation:** It can translate code from one programming language to another, facilitating cross-language development.
+## Customisation
 
-🔌 **API Integration:** Copilot can help integrate third-party APIs by generating the necessary code to interact with them.
+| # | Use case | File | What it shows |
+|---|---|---|---|
+| 21 | Custom instructions | [`21-custom-instructions.md`](21-custom-instructions.md) | Team-wide behavioural defaults |
+| 22 | Custom agents | [`22-custom-agents.md`](22-custom-agents.md) | Specialised agents per scenario |
+| 23 | Custom prompts | [`23-custom-prompts.md`](23-custom-prompts.md) | Reusable prompt files |
+| 25 | Agent skills | [`25-agent-skills.md`](25-agent-skills.md) | Extending agents with packaged capabilities |
 
-🔒 **Security Vulnerability Detection:** It can identify potential security vulnerabilities in the code and suggest fixes.
+## Reference material
 
-⚡ **Performance Optimization:** Copilot can suggest ways to improve the performance of the code, such as optimizing algorithms and data structures.
+- [`copilot-model-comparison.md`](copilot-model-comparison.md) — choosing between the available models
+- [`enterprise-mcp-servers.md`](enterprise-mcp-servers.md) — MCP servers worth adopting in an enterprise setting
+- [`.github/prompts/`](.github/prompts/) — ready-made prompt files (DRY-violation check, onboarding plan)
+- [`StockPriceChecker/`](StockPriceChecker/) — .NET sample used by several demos (`github-copilot-dotnet-demo.sln`)
+- [`api-endpoints.http`](api-endpoints.http) — REST Client requests for the API demos
 
-🖊️ **Code Formatting:** It can automatically format code according to best practices and style guidelines.
+---
 
-🧭 **Code Navigation:** Copilot can help navigate large codebases by providing context-aware suggestions and shortcuts.
+## Getting started
 
-🔄 **Workflow Generation:** Automatically generate customized workflows to streamline repetitive tasks and boost development efficiency.
+**Prerequisites**
 
-☁️ **Infrastructure Generation:** Automatically generate infrastructure as code to set up and manage cloud resources efficiently. (Terraform, Bicep, ARM)
+- VS Code with the [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) and Copilot Chat extensions
+- An active GitHub Copilot subscription
+- Python 3.9+ for the `.py` samples; .NET SDK 8.0+ for `StockPriceChecker`
 
-🛠️ **Self-Healing Capabilities:** In agent mode, Copilot can recognize errors and fix them automatically.
+```bash
+git clone https://github.com/amir0135/github-copilot-use-cases.git
+cd github-copilot-use-cases
+pip install -r requirements.txt
+```
 
-🗑️ **Reducing Chat History:** By reducing some parts of the conversation, GitHub Copilot can help you achieve your goal more accurately.
+Then open any numbered file and follow the instructions in its header comment.
 
-🕵️ **Code Review Assistance:** Copilot can assist in reviewing code by suggesting improvements and identifying potential issues.
+## Working effectively with Copilot
 
-💻 **Terminal Command Suggestions:** It can suggest terminal commands based on the context of the project, making it easier to manage the development environment.
+**Know your surfaces**
 
-### 📝 Copilot Edit
-AI-powered code suggestions and improvements directly within your editor.
+| Surface | Shortcut |
+|---|---|
+| Chat window | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>i</kbd> |
+| Inline chat | <kbd>Ctrl</kbd> + <kbd>i</kbd> |
+| Voice input | VS Code Speech extension |
 
-### 🤖 Copilot Agent
-New agent mode is capable of iterating on its own code, recognizing errors, and fixing them automatically. It can suggest terminal commands and ask you to execute them. It also analyzes run-time errors with self-healing capabilities. MCP tools can also be called in the Agent mode.
+**The 3S principle** — keep prompts **Simple**, **Specific**, and **Short**.
 
-### 📃 Customer Instructions
-Guidelines for customizing Copilot's behavior and suggestions to fit your workflow or team requirements.
+**Habits that help**
 
-### 💢 Custom Agents
-Define specialized agents to optimize Copilot's responses for different development scenarios.
+- Start a new chat when you change topic; stale context degrades suggestions
+- Type `/` for built-in commands, `#` to add context, `@` to call an extension
+- Keep relevant files open in tabs — Copilot reads them as context
+- Give thumbs up/down feedback; it tunes future suggestions
+- Trim irrelevant turns from a long conversation rather than fighting them
 
-### 💬 Custom Prompts
-Create tailored prompts to guide Copilot's code generation and explanations for specific use cases.
+## License
 
-### 📃 Plan Mode
-Creates a comprehensive project plan for the requested task, outlining EPICs and user stories needed to achieve the objective.
-
-### 💪 Agent Skills
-Enhances the ability of GitHub Copilot to perform specialized tasks.
-
-### ✨ GitHub Copilot SDK
-Infuses GitHub Copilot capabilities into your applications (.NET, Python, Go, Node/Typescript)
-
-### 🔗 Azure DevOps Integration
-Use the Azure DevOps MCP to query work items, create branches, PRs, and pipelines directly from your IDE. Maintains traceability from requirements to implementation.
-
-### Extensions
-🛠️ Use extensions by typing @  
-☁️ Azure, Docker, and many others!  
-💡 [Explore all extensions](https://github.com/marketplace?type=apps&copilot_app=true)
+MIT — see [LICENSE](LICENSE).
